@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Claim Sheet Generator</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script type="module">
+  // Import Firebase modules
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js';
+  import { getDatabase, ref, set, get, remove } from 'https://www.gstatic.com/firebasejs/10.5.0/firebase-database.js';
+
+  // Firebase Configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyAaCGWhYCqcon5CmAPqw6X6eu_4ENihDmQ",
+    authDomain: "loan-verification-d967d.firebaseapp.com",
+    databaseURL: "https://loan-verification-d967d-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "loan-verification-d967d",
+    storageBucket: "loan-verification-d967d.firebasestorage.app",
+    messagingSenderId: "841330453696",
+    appId: "1:841330453696:web:57055f0690c609788e9125",
+    measurementId: "G-LKY0C8L8WQ"
+  };
+
+  // Initialize Firebase
+  try {
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    
+    // Make Firebase functions global so they can be used in other scripts
+    window.firebaseReady = true;
+    window.firebaseDb = db;
+    window.firebaseRef = ref;
+    window.firebaseSet = set;
+    window.firebaseGet = get;
+    window.firebaseRemove = remove;
+    
+    // Test Firebase connection
+    get(ref(db, ".info/connected")).then((snapshot) => {
+      if (snapshot.val() === true) {
+        console.log("✅ Firebase connected successfully");
+      } else {
+        console.warn("⚠️ Firebase not connected - using localStorage");
+      }
+    }).catch(err => {
+      console.warn("⚠️ Firebase connection test failed - using localStorage");
+    });
+    
+    console.log("✅ Firebase initialized successfully");
+  } catch (error) {
+    console.error("❌ Firebase initialization error:", error);
+    window.firebaseReady = false;
+    console.log("⚠️ Using localStorage as fallback");
+  }
+</script>
+
+<style>
+/* ============= BASE STYLES ============= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  line-height: 1.6;
+  color: #333;
+}
+
+button, input, textarea, select {
+  font-family: inherit;
+}
+
+/* ============= LAYOUT ============= */
+.max-w-6xl {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.py-10 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+.mt-8 {
+  margin-top: 2rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.mb-3 {
+  margin-bottom: 0.75rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
+.mt-12 {
+  margin-top: 3rem;
+}
+
+.gap-3 {
+  gap: 0.75rem;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.gap-8 {
+  gap: 2rem;
+}
+
+.pt-6 {
+  padding-top: 1.5rem;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.bottom-0 {
+  bottom: 0;
+}
+
+.right-0 {
+  right: 0;
+}
+
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+/* ============= GRID ============= */
+.grid {
+  display: grid;
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.gap-3 {
+  gap: 0.75rem;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .md\:grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+  .md\:flex-row {
+    flex-direction: row;
+  }
+}
+
+/* ============= FLEXBOX ============= */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+/* ============= TEXT ============= */
+.text-center {
+  text-align: center;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-base {
+  font-size: 1rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+}
+
+.text-4xl {
+  font-size: 2.25rem;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-white {
+  color: white;
+}
+
+.text-gray-400 {
+  color: #9ca3af;
+}
+
+.text-gray-500 {
+  color: #6b7280;
+}
+
+.text-gray-600 {
+  color: #4b5563;
+}
+
+.text-gray-700 {
+  color: #374151;
+}
+
+.text-gray-800 {
+  color: #1f2937;
+}
+
+.text-opacity-60 {
+  opacity: 0.6;
+}
+
+.text-opacity-80 {
+  opacity: 0.8;
+}
+
+/* ============= BACKGROUND ============= */
+.bg-white {
+  background-color: white;
+}
+
+.bg-gray-100 {
+  background-color: #f3f4f6;
+}
+
+.bg-gray-300 {
+  background-color: #d1d5db;
+}
+
+.bg-gray-400 {
+  background-color: #9ca3af;
+}
+
+.bg-green-600 {
+  background-color: #16a34a;
+}
+
+.bg-green-700 {
+  background-color: #15803d;
+}
+
+.bg-purple-600 {
+  background-color: #7c3aed;
+}
+
+.bg-purple-700 {
+  background-color: #6d28d9;
+}
+
+.bg-pink-600 {
+  background-color: #ec4899;
+}
+
+.bg-black {
+  background-color: black;
+}
+
+.bg-opacity-20 {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.bg-opacity-30 {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.bg-opacity-50 {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* ============= GLASS PANEL ============= */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ============= ROUNDED ============= */
+.rounded {
+  border-radius: 0.375rem;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.rounded-xl {
+  border-radius: 0.75rem;
+}
+
+.rounded-2xl {
+  border-radius: 1rem;
+}
+
+.rounded-t-2xl {
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+.rounded-b-2xl {
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+.rounded-full {
+  border-radius: 9999px;
+}
+
+/* ============= PADDING ============= */
+.p-1 {
+  padding: 0.25rem;
+}
+
+.p-2 {
+  padding: 0.5rem;
+}
+
+.p-3 {
+  padding: 0.75rem;
+}
+
+.p-6 {
+  padding: 1.5rem;
+}
+
+.p-8 {
+  padding: 2rem;
+}
+
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.px-8 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+/* ============= SHADOW ============= */
+.shadow {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-2xl {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* ============= BORDER ============= */
+.border {
+  border: 1px solid #e5e7eb;
+}
+
+.border-2 {
+  border: 2px solid #e5e7eb;
+}
+
+.border-dashed {
+  border-style: dashed;
+}
+
+.border-t {
+  border-top: 1px solid #e5e7eb;
+}
+
+.border-gray-300 {
+  border-color: #d1d5db;
+}
+
+.border-gray-400 {
+  border-color: #9ca3af;
+}
+
+.border-purple-500 {
+  border-color: #a78bfa;
+}
+
+/* ============= WIDTH/HEIGHT ============= */
+.w-full {
+  width: 100%;
+}
+
+.w-12 {
+  width: 3rem;
+}
+
+.w-16 {
+  width: 4rem;
+}
+
+.h-12 {
+  height: 3rem;
+}
+
+.h-16 {
+  height: 4rem;
+}
+
+.max-w-md {
+  max-width: 28rem;
+}
+
+.max-w-xl {
+  max-width: 36rem;
+}
+
+.max-h-40 {
+  max-height: 10rem;
+}
+
+.max-h-96 {
+  max-height: 24rem;
+}
+
+/* ============= DISPLAY ============= */
+.hidden {
+  display: none !important;
+}
+
+.block {
+  display: block;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+/* ============= OVERFLOW ============= */
+.overflow-y-auto {
+  overflow-y: auto;
+}
+
+/* ============= Z-INDEX ============= */
+.z-50 {
+  z-index: 50;
+}
+
+/* ============= TRANSITIONS ============= */
+.transition {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* ============= CUSTOM STYLES ============= */
+.preview-item {
+  cursor: grab;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.preview-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.preview-item.dragging {
+  opacity: 0.4;
+  transform: scale(0.95);
+}
+
+.layout-btn {
+  transition: all 0.3s ease;
+  border: 2px solid #e5e7eb;
+}
+
+.layout-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+  transform: scale(1.05);
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #667eea;
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: slideDown 0.3s ease-out;
+}
+
+.text-input-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.text-input-item input {
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.section-header {
+  font-size: 14px;
+  font-weight: 600;
+  color: #667eea;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.hover\:text-opacity-100:hover {
+  color: white;
+}
+
+.hover\:bg-gray-100:hover {
+  background-color: #f3f4f6;
+}
+
+.hover\:bg-gray-400:hover {
+  background-color: #9ca3af;
+}
+
+.hover\:bg-green-700:hover {
+  background-color: #15803d;
+}
+
+.hover\:bg-purple-700:hover {
+  background-color: #6d28d9;
+}
+
+.hover\:bg-opacity-30:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.hover\:shadow-lg:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.hover\:border-purple-500:hover {
+  border-color: #a78bfa;
+}
+
+/* ============= RESPONSIVE ============= */
+@media (max-width: 768px) {
+  .md\:grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .md\:grid-cols-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="max-w-6xl mx-auto py-10 px-4">
+
+<!-- HEADER -->
+<div class="text-center mb-8 relative">
+  <h1 class="text-4xl font-bold text-white mb-2">
+    Claim Sheet Generator
+  </h1>
+  <p class="text-white text-opacity-80 text-sm">Create professional claim sheets with custom layouts</p>
+  <div class="absolute bottom-0 left-0 flex gap-2">
+    <button id="helpBtn" onclick="toggleHelpPopup()" title="Help" 
+      class="text-white text-opacity-60 hover:text-opacity-100 transition text-xl cursor-pointer">❓</button>
+    <button id="adminBtn" onclick="toggleAdminPanel()" title="Admin" 
+      class="text-white text-opacity-60 hover:text-opacity-100 transition text-xl cursor-pointer hidden">⚙️</button>
+  </div>
+</div>
+
+<!-- USER DETAILS PANEL -->
+<div class="glass-panel p-8 rounded-2xl shadow-xl mb-6">
+  <div class="section-header">Document Information</div>
+  <div class="grid md:grid-cols-3 gap-4">
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Article Name</label>
+      <input id="userName" placeholder="Enter article name"
+        class="border border-gray-300 p-3 rounded-lg w-full focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition">
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Client Name</label>
+      <input id="clientName" placeholder="Enter client name"
+        class="border border-gray-300 p-3 rounded-lg w-full focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition">
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+      <input id="location" placeholder="Enter location"
+        class="border border-gray-300 p-3 rounded-lg w-full focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition">
+    </div>
+  </div>
+</div>
+
+<!-- LAYOUT & OPTIONS PANEL -->
+<div class="glass-panel p-8 rounded-2xl shadow-xl mb-6">
+  <div class="grid md:grid-cols-2 gap-8">
+    <!-- Layout Selection -->
+    <div>
+      <div class="section-header">Choose Layout</div>
+      <div class="grid grid-cols-3 gap-3">
+        <button onclick="setLayout(3)" class="layout-btn active py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition">
+          3×3
+        </button>
+        <button onclick="setLayout(4)" class="layout-btn py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition">
+          4×3
+        </button>
+        <button onclick="setLayout(5)" class="layout-btn py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition">
+          4×4
+        </button>
+      </div>
+    </div>
+
+    <!-- Text Toggle -->
+    <div>
+      <div class="section-header">Add Text Under Images</div>
+      <div class="flex items-center gap-4">
+        <label class="toggle-switch">
+          <input type="checkbox" id="textToggle" onchange="toggleTextFields()">
+          <span class="slider"></span>
+        </label>
+        <span class="text-gray-700 font-medium">Enable text field for each image</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UPLOAD PANEL -->
+<div class="glass-panel p-8 rounded-2xl shadow-xl text-center mb-6">
+  <div class="section-header">Upload Images</div>
+  <div id="dropZone" class="border-2 border-dashed border-gray-400 rounded-xl p-8 hover:border-purple-500 transition cursor-pointer" 
+    style="background-color: rgba(255, 255, 255, 0.5);">
+    <svg class="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+    </svg>
+    <p class="text-gray-600 font-medium">Click to upload or drag images here</p>
+    <p class="text-gray-400 text-sm mt-1">You can select 50+ images at once!</p>
+  </div>
+
+  <input type="file"
+    id="fileInput"
+    multiple
+    accept="image/*"
+    style="display: none;">
+</div>
+
+<!-- PREVIEW SECTION -->
+<div class="glass-panel p-8 rounded-2xl shadow-xl mb-6">
+  <div class="section-header mb-6">Preview & Reorder</div>
+  <p class="text-gray-600 text-sm mb-6">Drag items to reorder them in your claim sheet</p>
+  
+  <div id="preview" class="grid gap-4 mb-4" style="max-height: 70vh; overflow-y: auto; padding: 0.5rem;"></div>
+  
+  <div id="emptyState" class="text-center py-12 text-gray-400">
+    <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+    </svg>
+    <p>No images uploaded yet</p>
+  </div>
+</div>
+
+<!-- GENERATE BUTTON -->
+<button onclick="generatePDF()"
+  class="w-full btn-primary text-white py-4 rounded-xl font-bold text-lg hover:shadow-lg">
+  📄 Generate Claim Sheet PDF
+</button>
+
+<!-- FOOTER -->
+<div class="text-center mt-12 text-white text-opacity-60 text-sm">
+  Developed by <span class="font-semibold text-white text-opacity-80">Nihal Shalu</span>
+</div>
+
+</div>
+
+
+
+<!-- HELP POPUP MODAL -->
+<div id="helpModal" style="position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; background-color: rgba(0, 0, 0, 0.5) !important; display: none !important; z-index: 9999 !important; align-items: center !important; justify-content: center !important;">
+  <div style="background: white; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); width: 24rem; max-width: 90vw; max-height: 80vh; overflow-y: auto; display: flex; flex-direction: column;">
+    <div style="background: linear-gradient(135deg, rgb(37, 99, 235) 0%, rgb(6, 182, 212) 100%); padding: 1.5rem; border-radius: 1rem 1rem 0 0; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0;">
+      <h2 style="color: white; font-weight: bold; font-size: 1.125rem;">❓ Help</h2>
+      <button onclick="closeHelpPopup()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; padding: 0;">✕</button>
+    </div>
+
+    <div style="padding: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.875rem;">
+      <div style="background: rgb(239, 246, 255); border-radius: 0.5rem; padding: 0.75rem; border-left: 4px solid rgb(59, 130, 246);">
+        <p style="font-weight: 600; color: rgb(31, 41, 55); margin-bottom: 0.25rem;">📋 Quick Tips</p>
+        <ul style="color: rgb(55, 65, 81); font-size: 0.75rem; line-height: 1.5;">
+          <li>• Upload images to create your sheet</li>
+          <li>• Drag items to reorder them</li>
+          <li>• Choose layout (3×3, 4×3, 4×4)</li>
+          <li>• Enable text for captions</li>
+        </ul>
+      </div>
+
+      <div style="background: rgb(254, 242, 242); border-radius: 0.5rem; padding: 0.75rem; border-left: 4px solid rgb(220, 38, 38);">
+        <p style="font-weight: 600; color: rgb(127, 29, 29); margin-bottom: 0.25rem;">⚠️ Important</p>
+        <p style="color: rgb(153, 27, 27); font-size: 0.75rem;">Images are NOT stored on server. Upload all images in one go.</p>
+      </div>
+
+      <div style="background: rgb(240, 253, 244); border-radius: 0.5rem; padding: 0.75rem; border-left: 4px solid rgb(34, 197, 94);">
+        <p style="font-weight: 600; color: rgb(31, 41, 55); margin-bottom: 0.5rem;">✅ Steps</p>
+        <ol style="color: rgb(55, 65, 81); font-size: 0.75rem; line-height: 1.5; margin-left: 1rem;">
+          <li><strong>1.</strong> Fill Document Info</li>
+          <li><strong>2.</strong> Select Layout</li>
+          <li><strong>3.</strong> Upload Images</li>
+          <li><strong>4.</strong> Generate PDF</li>
+        </ol>
+      </div>
+
+      <div style="background: rgb(254, 252, 231); border-radius: 0.5rem; padding: 0.75rem; border-left: 4px solid rgb(234, 179, 8);">
+        <p style="font-weight: 600; color: rgb(120, 53, 15); margin-bottom: 0.25rem;">💡 Tips</p>
+        <p style="color: rgb(180, 83, 9); font-size: 0.75rem;">Use Ctrl+A to select all images at once when uploading!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BROADCAST MESSAGE POPUP -->
+<div id="broadcastPopup" style="position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; background-color: rgba(0, 0, 0, 0.5) !important; display: none !important; z-index: 9999 !important; align-items: center !important; justify-content: center !important;">
+  <div style="background: white; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); width: 24rem; max-width: 90vw;">
+    <div style="background: linear-gradient(135deg, rgb(168, 85, 247) 0%, rgb(236, 72, 153) 100%); padding: 1.5rem; border-radius: 1rem 1rem 0 0;">
+      <h3 style="color: white; font-weight: bold; font-size: 1.125rem;">📢 Announcement</h3>
+    </div>
+    <div style="padding: 1.5rem;">
+      <p id="broadcastMessage" style="color: rgb(31, 41, 55); margin-bottom: 1.5rem;"></p>
+      <button onclick="dismissBroadcast()" style="width: 100%; background: rgb(147, 51, 234); color: white; padding: 0.5rem; border-radius: 0.5rem; border: none; cursor: pointer; font-weight: 500;">
+        Got it, dismiss
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL MODAL -->
+<div id="adminPanel" style="position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; background-color: rgba(0, 0, 0, 0.5) !important; display: none !important; z-index: 9999 !important; align-items: center !important; justify-content: center !important;">
+  <div style="background: white; border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); width: 100%; max-width: 56rem; max-height: 90vh; overflow-y: auto;">
+    
+    <!-- Login View -->
+    <div id="adminLoginView" style="padding: 2rem;">
+      <h2 style="font-size: 1.875rem; font-weight: bold; color: rgb(31, 41, 55); margin-bottom: 1.5rem;">🔐 Admin Access</h2>
+      <div style="margin-bottom: 1rem;">
+        <label style="display: block; font-size: 0.875rem; font-weight: 500; color: rgb(55, 65, 81); margin-bottom: 0.5rem;">Password</label>
+        <input type="password" id="adminPassword" placeholder="Enter admin password" style="width: 100%; border: 1px solid rgb(209, 213, 219); padding: 0.75rem; border-radius: 0.5rem; outline: none;" onkeypress="if(event.key==='Enter') verifyAdmin()">
+      </div>
+      <button onclick="verifyAdmin()" style="width: 100%; background: linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%); color: white; padding: 0.5rem; border-radius: 0.5rem; border: none; cursor: pointer; font-weight: 500; margin-bottom: 0.5rem;">
+        Login
+      </button>
+      <button onclick="closeAdminPanel()" style="width: 100%; background: rgb(209, 213, 219); color: rgb(31, 41, 55); padding: 0.5rem; border-radius: 0.5rem; border: none; cursor: pointer; font-weight: 500;">
+        Cancel
+      </button>
+    </div>
+
+    <!-- Admin Panel View -->
+    <div id="adminPanelView" style="display: none;">
+      <div style="background: linear-gradient(135deg, rgb(147, 51, 234) 0%, rgb(236, 72, 153) 100%); padding: 2rem; position: sticky; top: 0;">
+        <h2 style="color: white; font-weight: bold; font-size: 1.125rem; display: flex; align-items: center; justify-content: space-between;">
+          🛠️ Admin Panel
+          <button onclick="logoutAdmin()" style="font-size: 0.875rem; background: rgba(255, 255, 255, 0.2); color: white; padding: 0.25rem 0.75rem; border-radius: 0.25rem; border: none; cursor: pointer;">
+            Logout
+          </button>
+        </h2>
+      </div>
+
+      <div style="padding: 2rem;">
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; font-size: 0.875rem; font-weight: 500; color: rgb(55, 65, 81); margin-bottom: 0.5rem;">Broadcast Message</label>
+          <textarea id="broadcastText" placeholder="Enter your message..." style="width: 100%; border: 1px solid rgb(209, 213, 219); padding: 0.75rem; border-radius: 0.5rem; outline: none; min-height: 100px;"></textarea>
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; font-size: 0.875rem; font-weight: 500; color: rgb(55, 65, 81); margin-bottom: 0.5rem;">Display Duration (seconds)</label>
+          <input type="number" id="messageDuration" value="5" min="1" max="300" style="width: 100%; border: 1px solid rgb(209, 213, 219); padding: 0.75rem; border-radius: 0.5rem; outline: none;">
+          <p style="font-size: 0.75rem; color: rgb(107, 114, 128); margin-top: 0.25rem;">Message will auto-dismiss after this time</p>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem;">
+          <button onclick="sendBroadcast()" style="flex: 1; background: rgb(34, 197, 94); color: white; padding: 0.5rem; border-radius: 0.5rem; border: none; cursor: pointer; font-weight: 500;">
+            📤 Send Broadcast
+          </button>
+          <button onclick="closeAdminPanel()" style="flex: 1; background: rgb(209, 213, 219); color: rgb(31, 41, 55); padding: 0.5rem; border-radius: 0.5rem; border: none; cursor: pointer; font-weight: 500;">
+            Close
+          </button>
+        </div>
+
+        <!-- Broadcast History -->
+        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgb(209, 213, 219);">
+          <h3 style="font-weight: 600; color: rgb(31, 41, 55); margin-bottom: 0.75rem;">📋 Broadcast History</h3>
+          <div id="historyList" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 160px; overflow-y: auto; font-size: 0.875rem;">
+            <p style="color: rgb(107, 114, 128);">No broadcasts sent yet</p>
+          </div>
+        </div>
+
+        <!-- PDF Generation Logs -->
+        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgb(209, 213, 219);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+            <h3 style="font-weight: 600; color: rgb(31, 41, 55);">📊 PDF Generation Logs</h3>
+            <button onclick="clearPDFLogs()" style="font-size: 0.75rem; background: rgb(254, 226, 226); color: rgb(220, 38, 38); padding: 0.25rem 0.5rem; border-radius: 0.25rem; border: none; cursor: pointer;">
+              Clear Logs
+            </button>
+          </div>
+          <div id="pdfLogsList" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 240px; overflow-y: auto; font-size: 0.875rem;">
+            <p style="color: rgb(107, 114, 128);">No PDFs generated yet</p>
+          </div>
+        </div>
+
+        <!-- User Statistics -->
+        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgb(209, 213, 219);">
+          <h3 style="font-weight: 600; color: rgb(31, 41, 55); margin-bottom: 0.75rem;">👥 User Statistics</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.875rem; margin-bottom: 1rem;">
+            <div style="background: rgb(239, 246, 255); border-left: 4px solid rgb(59, 130, 246); padding: 0.75rem; border-radius: 0.25rem;">
+              <p style="color: rgb(107, 114, 128); font-size: 0.75rem;">Total PDFs Generated</p>
+              <p style="font-size: 1.5rem; font-weight: bold; color: rgb(37, 99, 235);" id="totalPDFs">0</p>
+            </div>
+            <div style="background: rgb(240, 253, 244); border-left: 4px solid rgb(34, 197, 94); padding: 0.75rem; border-radius: 0.25rem;">
+              <p style="color: rgb(107, 114, 128); font-size: 0.75rem;">Total Images Processed</p>
+              <p style="font-size: 1.5rem; font-weight: bold; color: rgb(34, 197, 94);" id="totalImages">0</p>
+            </div>
+            <div style="background: rgb(245, 243, 255); border-left: 4px solid rgb(168, 85, 247); padding: 0.75rem; border-radius: 0.25rem;">
+              <p style="color: rgb(107, 114, 128); font-size: 0.75rem;">Unique Users</p>
+              <p style="font-size: 1.5rem; font-weight: bold; color: rgb(168, 85, 247);" id="uniqueUsers">0</p>
+            </div>
+            <div style="background: rgb(254, 252, 231); border-left: 4px solid rgb(234, 179, 8); padding: 0.75rem; border-radius: 0.25rem;">
+              <p style="color: rgb(107, 114, 128); font-size: 0.75rem;">Text Enabled Usage</p>
+              <p style="font-size: 1.5rem; font-weight: bold; color: rgb(180, 83, 9);" id="textEnabledCount">0%</p>
+            </div>
+          </div>
+
+          <div style="padding: 0.75rem; background: rgb(249, 250, 251); border-radius: 0.25rem; border: 1px solid rgb(209, 213, 219);">
+            <p style="font-weight: 600; color: rgb(31, 41, 55); margin-bottom: 0.5rem;">Per-User Breakdown:</p>
+            <div id="userBreakdown" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 160px; overflow-y: auto; font-size: 0.75rem;">
+              <p style="color: rgb(107, 114, 128);">No user data yet</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+
+let currentLayout = 3;
+let enableTextFields = false;
+const input = document.getElementById("fileInput");
+const preview = document.getElementById("preview");
+const emptyState = document.getElementById("emptyState");
+const previewImages = [];
+
+// Admin system
+const ADMIN_PASSWORD = "nihal@123";
+let isAdminLoggedIn = false;
+let broadcastHistory = [];
+let pdfGenerationLogs = [];
+
+// Firebase state (will be set by module script)
+let firebaseReady = false;
+let firebaseDb = null;
+
+// Load broadcast history from localStorage
+function loadBroadcastHistory() {
+  const saved = localStorage.getItem("broadcastHistory");
+  if (saved) {
+    broadcastHistory = JSON.parse(saved);
+    updateHistoryDisplay();
+  }
+}
+
+// Load PDF logs from Firebase (or localStorage as fallback)
+function loadPDFLogs() {
+  if (window.firebaseReady && window.firebaseDb) {
+    // Try to load from Firebase
+    window.firebaseGet(window.firebaseRef(window.firebaseDb, "pdfLogs")).then((snapshot) => {
+      if (snapshot.exists()) {
+        const logsObj = snapshot.val();
+        // Convert object to array
+        pdfGenerationLogs = Object.values(logsObj).reverse(); // Most recent first
+      } else {
+        pdfGenerationLogs = [];
+      }
+      updatePDFLogsDisplay();
+    }).catch(error => {
+      console.error("Firebase load error, falling back to localStorage:", error);
+      // Fallback to localStorage
+      const saved = localStorage.getItem("pdfGenerationLogs");
+      if (saved) {
+        pdfGenerationLogs = JSON.parse(saved);
+      }
+      updatePDFLogsDisplay();
+    });
+  } else {
+    // Firebase not ready, use localStorage
+    const saved = localStorage.getItem("pdfGenerationLogs");
+    if (saved) {
+      pdfGenerationLogs = JSON.parse(saved);
+    }
+    updatePDFLogsDisplay();
+  }
+}
+
+function saveBroadcastHistory() {
+  localStorage.setItem("broadcastHistory", JSON.stringify(broadcastHistory));
+}
+
+// Save PDF logs to Firebase and localStorage
+function savePDFLogs() {
+  // Always save to localStorage as backup
+  localStorage.setItem("pdfGenerationLogs", JSON.stringify(pdfGenerationLogs));
+  
+  // Also save to Firebase if available
+  if (window.firebaseReady && window.firebaseDb) {
+    try {
+      // Convert array to object with timestamps as keys for better querying
+      const logsObj = {};
+      pdfGenerationLogs.forEach((log, index) => {
+        logsObj[`log_${Date.now()}_${index}`] = log;
+      });
+      window.firebaseSet(window.firebaseRef(window.firebaseDb, "pdfLogs"), logsObj).catch(error => {
+        console.error("Firebase save error:", error);
+      });
+    } catch (error) {
+      console.error("Error saving to Firebase:", error);
+    }
+  }
+}
+
+function updateHistoryDisplay() {
+  const historyList = document.getElementById("historyList");
+  if (broadcastHistory.length === 0) {
+    historyList.innerHTML = '<p class="text-gray-500">No broadcasts sent yet</p>';
+    return;
+  }
+  historyList.innerHTML = broadcastHistory.map((item, idx) => `
+    <div class="bg-gray-100 p-2 rounded">
+      <p class="text-gray-800 font-medium">${idx + 1}. ${item.message.substring(0, 50)}${item.message.length > 50 ? '...' : ''}</p>
+      <p class="text-gray-500 text-xs">${item.time}</p>
+    </div>
+  `).join("");
+}
+
+// Update PDF logs display
+function updatePDFLogsDisplay() {
+  const pdfLogsList = document.getElementById("pdfLogsList");
+  if (pdfGenerationLogs.length === 0) {
+    pdfLogsList.innerHTML = '<p class="text-gray-500">No PDFs generated yet</p>';
+    updateUserStatistics();
+    return;
+  }
+  pdfLogsList.innerHTML = pdfGenerationLogs.map((log, idx) => `
+    <div class="bg-blue-50 border-l-4 border-blue-500 p-3 rounded">
+      <p class="text-gray-800 font-medium text-sm">${idx + 1}. Article: <strong>${log.articleName}</strong></p>
+      <p class="text-gray-700 text-xs">Client: ${log.clientName} | Location: ${log.location}</p>
+      <p class="text-gray-700 text-xs">Layout: <strong>${log.layout}</strong> | Images: <strong>${log.imageCount}</strong> | Text: ${log.textEnabled ? '✓ Yes' : '✗ No'}</p>
+      <p class="text-gray-600 text-xs">📅 ${log.timestamp} | 📄 ${log.filename}</p>
+    </div>
+  `).join("");
+  
+  updateUserStatistics();
+}
+
+// Calculate and display user statistics
+function updateUserStatistics() {
+  if (pdfGenerationLogs.length === 0) {
+    document.getElementById("totalPDFs").textContent = "0";
+    document.getElementById("totalImages").textContent = "0";
+    document.getElementById("uniqueUsers").textContent = "0";
+    document.getElementById("textEnabledCount").textContent = "0%";
+    document.getElementById("userBreakdown").innerHTML = '<p class="text-gray-500">No user data yet</p>';
+    return;
+  }
+
+  // Calculate statistics
+  const totalPDFs = pdfGenerationLogs.length;
+  const totalImages = pdfGenerationLogs.reduce((sum, log) => sum + (log.imageCount || 0), 0);
+  const textEnabledCount = pdfGenerationLogs.filter(log => log.textEnabled).length;
+  const textEnabledPercentage = Math.round((textEnabledCount / totalPDFs) * 100);
+
+  // Per-user statistics
+  const userStats = {};
+  pdfGenerationLogs.forEach(log => {
+    const userName = log.articleName || "Unknown User";
+    if (!userStats[userName]) {
+      userStats[userName] = {
+        pdfCount: 0,
+        totalImages: 0,
+        textEnabled: 0,
+        layouts: {},
+        lastGenerated: null
+      };
+    }
+    userStats[userName].pdfCount += 1;
+    userStats[userName].totalImages += log.imageCount || 0;
+    if (log.textEnabled) userStats[userName].textEnabled += 1;
+    userStats[userName].layouts[log.layout] = (userStats[userName].layouts[log.layout] || 0) + 1;
+    userStats[userName].lastGenerated = log.timestamp;
+  });
+
+  // Get unique users count
+  const uniqueUsers = Object.keys(userStats).length;
+
+  // Update main statistics
+  document.getElementById("totalPDFs").textContent = totalPDFs;
+  document.getElementById("totalImages").textContent = totalImages;
+  document.getElementById("uniqueUsers").textContent = uniqueUsers;
+  document.getElementById("textEnabledCount").textContent = textEnabledPercentage + "%";
+
+  // Generate per-user breakdown
+  const userBreakdownHTML = Object.entries(userStats).map(([userName, stats]) => {
+    const preferredLayout = Object.entries(stats.layouts).sort((a, b) => b[1] - a[1])[0];
+    return `
+      <div class="bg-white border border-gray-200 p-2 rounded">
+        <p class="font-medium text-gray-800">${userName}</p>
+        <p class="text-gray-700">PDFs: <strong>${stats.pdfCount}</strong> | Images: <strong>${stats.totalImages}</strong> | Text: <strong>${stats.textEnabled}/${stats.pdfCount}</strong></p>
+        <p class="text-gray-600">Preferred: ${preferredLayout[0]} | Last: ${stats.lastGenerated}</p>
+      </div>
+    `;
+  }).join("");
+
+  document.getElementById("userBreakdown").innerHTML = userBreakdownHTML;
+}
+
+// Log PDF generation
+function logPDFGeneration(articleName, clientName, location, layout, imageCount, textEnabled, filename) {
+  const now = new Date().toLocaleString();
+  
+  const logEntry = {
+    articleName: articleName || "-",
+    clientName: clientName || "-",
+    location: location || "-",
+    layout: layout,
+    imageCount: imageCount,
+    textEnabled: textEnabled,
+    filename: filename,
+    timestamp: now
+  };
+  
+  pdfGenerationLogs.unshift(logEntry); // Add to beginning
+  
+  // Keep only last 50 logs
+  if (pdfGenerationLogs.length > 50) {
+    pdfGenerationLogs.pop();
+  }
+  
+  savePDFLogs();
+  
+  // Update display if admin panel is open and logged in
+  if (isAdminLoggedIn) {
+    updatePDFLogsDisplay();
+  }
+}
+
+// Clear PDF logs from Firebase and localStorage
+function clearPDFLogs() {
+  if (confirm("Are you sure you want to clear all PDF logs?")) {
+    pdfGenerationLogs = [];
+    localStorage.removeItem("pdfGenerationLogs");
+    
+    if (window.firebaseReady && window.firebaseDb) {
+      window.firebaseRemove(window.firebaseRef(window.firebaseDb, "pdfLogs")).catch(error => {
+        console.error("Error clearing Firebase logs:", error);
+      });
+    }
+    
+    updatePDFLogsDisplay();
+    alert("✅ PDF logs cleared!");
+  }
+}
+
+function updateHistoryDisplay() {
+  const historyList = document.getElementById("historyList");
+  if (broadcastHistory.length === 0) {
+    historyList.innerHTML = '<p class="text-gray-500">No broadcasts sent yet</p>';
+    return;
+  }
+  historyList.innerHTML = broadcastHistory.map((item, idx) => `
+    <div class="bg-gray-100 p-2 rounded">
+      <p class="text-gray-800 font-medium">${idx + 1}. ${item.message.substring(0, 50)}${item.message.length > 50 ? '...' : ''}</p>
+      <p class="text-gray-500 text-xs">${item.time}</p>
+    </div>
+  `).join("");
+}
+
+function toggleAdminPanel() {
+  const adminPanel = document.getElementById("adminPanel");
+  const adminLoginView = document.getElementById("adminLoginView");
+  const adminPanelView = document.getElementById("adminPanelView");
+  
+  adminPanel.classList.remove("hidden");
+  
+  if (isAdminLoggedIn) {
+    adminLoginView.classList.add("hidden");
+    adminPanelView.classList.remove("hidden");
+  } else {
+    adminLoginView.classList.remove("hidden");
+    adminPanelView.classList.add("hidden");
+    document.getElementById("adminPassword").value = "";
+    setTimeout(() => document.getElementById("adminPassword").focus(), 100);
+  }
+}
+
+function verifyAdmin() {
+  const password = document.getElementById("adminPassword").value;
+  
+  if (password === ADMIN_PASSWORD) {
+    isAdminLoggedIn = true;
+    const adminLoginView = document.getElementById("adminLoginView");
+    const adminPanelView = document.getElementById("adminPanelView");
+    
+    adminLoginView.classList.add("hidden");
+    adminPanelView.classList.remove("hidden");
+    
+    loadBroadcastHistory();
+    loadPDFLogs();
+  } else {
+    alert("❌ Incorrect password!");
+    document.getElementById("adminPassword").value = "";
+  }
+}
+
+function logoutAdmin() {
+  isAdminLoggedIn = false;
+  closeAdminPanel();
+}
+
+function closeAdminPanel() {
+  document.getElementById("adminPanel").classList.add("hidden");
+}
+
+function sendBroadcast() {
+  const message = document.getElementById("broadcastText").value.trim();
+  const duration = parseInt(document.getElementById("messageDuration").value) || 5;
+  
+  if (!message) {
+    alert("Please enter a message!");
+    return;
+  }
+  
+  // Show popup immediately
+  showBroadcastPopup(message, duration);
+  
+  // Save to history
+  const now = new Date().toLocaleString();
+  broadcastHistory.unshift({
+    message: message,
+    time: now,
+    duration: duration
+  });
+  
+  if (broadcastHistory.length > 20) {
+    broadcastHistory.pop(); // Keep only last 20
+  }
+  
+  saveBroadcastHistory();
+  updateHistoryDisplay();
+  
+  // Clear form
+  document.getElementById("broadcastText").value = "";
+  document.getElementById("messageDuration").value = "5";
+  
+  alert("✅ Broadcast sent successfully!");
+}
+
+function showBroadcastPopup(message, duration) {
+  const popup = document.getElementById("broadcastPopup");
+  const messageEl = document.getElementById("broadcastMessage");
+  
+  messageEl.textContent = message;
+  popup.classList.remove("hidden");
+  
+  // Auto-dismiss after duration
+  if (broadcastTimeout) clearTimeout(broadcastTimeout);
+  broadcastTimeout = setTimeout(() => {
+    dismissBroadcast();
+  }, duration * 1000);
+}
+
+let broadcastTimeout;
+
+function dismissBroadcast() {
+  const popup = document.getElementById("broadcastPopup");
+  popup.classList.add("hidden");
+  if (broadcastTimeout) clearTimeout(broadcastTimeout);
+}
+
+// Load history on page start
+loadBroadcastHistory();
+
+// ============= HELP POPUP FUNCTIONS =============
+// ============= HELP POPUP FUNCTIONS =============
+function toggleHelpPopup() {
+  const helpModal = document.getElementById("helpModal");
+  helpModal.style.display = helpModal.style.display === "flex" ? "none" : "flex";
+}
+
+function closeHelpPopup() {
+  const helpModal = document.getElementById("helpModal");
+  helpModal.style.display = "none";
+}
+
+// Secret keyboard shortcut to unlock admin (Ctrl+Shift+A)
+document.addEventListener("keydown", (e) => {
+  if (e.ctrlKey && e.shiftKey && e.key === "A") {
+    const adminBtn = document.getElementById("adminBtn");
+    adminBtn.classList.remove("hidden");
+    alert("🔐 Admin panel button revealed! Use it wisely.");
+  }
+});
+
+// Close popups when clicking outside
+document.addEventListener("DOMContentLoaded", () => {
+  loadPDFLogs(); // Load logs on page start
+  
+  const helpModal = document.getElementById("helpModal");
+  if (helpModal) {
+    helpModal.addEventListener("click", (e) => {
+      if (e.target === helpModal) {
+        closeHelpPopup();
+      }
+    });
+  }
+  
+  const adminPanel = document.getElementById("adminPanel");
+  if (adminPanel) {
+    adminPanel.addEventListener("click", (e) => {
+      if (e.target === adminPanel) {
+        closeAdminPanel();
+      }
+    });
+  }
+  
+  const broadcastPopup = document.getElementById("broadcastPopup");
+  if (broadcastPopup) {
+    broadcastPopup.addEventListener("click", (e) => {
+      if (e.target === broadcastPopup) {
+        dismissBroadcast();
+      }
+    });
+  }
+});
+
+function setLayout(cols) {
+  currentLayout = cols;
+  
+  // Update button states
+  document.querySelectorAll(".layout-btn").forEach(btn => {
+    btn.classList.remove("active");
+  });
+  event.target.classList.add("active");
+  
+  // Update grid layout
+  if (cols === 3) {
+    preview.className = "grid gap-4 mb-4 grid-cols-3";  // 3x3 = 3 columns
+  } else if (cols === 4) {
+    preview.className = "grid gap-4 mb-4 grid-cols-4";  // 4x3 = 4 columns
+  } else if (cols === 5) {
+    preview.className = "grid gap-4 mb-4 grid-cols-4";  // 4x4 = 4 columns
+  }
+}
+
+function toggleTextFields() {
+  enableTextFields = document.getElementById("textToggle").checked;
+  updatePreview();
+}
+
+// ============= FILE INPUT & DRAG-DROP HANDLER =============
+const dropZone = document.getElementById("dropZone");
+
+// Click to upload
+dropZone.addEventListener("click", () => {
+  input.click();
+});
+
+// Drag and drop
+dropZone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  dropZone.style.borderColor = "#667eea";
+  dropZone.style.backgroundColor = "rgba(102, 126, 234, 0.1)";
+});
+
+dropZone.addEventListener("dragleave", () => {
+  dropZone.style.borderColor = "#9ca3af";
+  dropZone.style.backgroundColor = "rgba(255, 255, 255, 0.5)";
+});
+
+dropZone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropZone.style.borderColor = "#9ca3af";
+  dropZone.style.backgroundColor = "rgba(255, 255, 255, 0.5)";
+  
+  const files = e.dataTransfer.files;
+  input.files = files;
+  
+  // Trigger change event manually
+  const event = new Event("change", { bubbles: true });
+  input.dispatchEvent(event);
+});
+
+// Handle file selection (both click and drag-drop)
+input.addEventListener("change", () => {
+  previewImages.length = 0;
+  preview.innerHTML = "";
+
+  const files = Array.from(input.files);
+  console.log(`📁 Total files selected: ${files.length}`);
+  
+  let loadedCount = 0;
+
+  files.forEach((file, index) => {
+    if (!file.type.startsWith("image/")) {
+      console.log(`⚠️ Skipping non-image: ${file.name}`);
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      previewImages.push({
+        src: e.target.result,
+        text: ""
+      });
+      loadedCount++;
+      console.log(`✅ Loaded image ${loadedCount}: ${file.name}`);
+      updatePreview();
+      
+      // Show status
+      if (loadedCount === files.filter(f => f.type.startsWith("image/")).length) {
+        console.log(`🎉 All ${previewImages.length} images loaded!`);
+      }
+    };
+
+    reader.onerror = () => {
+      console.error(`❌ Failed to load: ${file.name}`);
+    };
+
+    reader.readAsDataURL(file);
+  });
+});
+
+function updatePreview() {
+  preview.innerHTML = "";
+  emptyState.style.display = previewImages.length === 0 ? "block" : "none";
+
+  previewImages.forEach((image, index) => {
+    const div = document.createElement("div");
+    div.className = "preview-item bg-white p-3 rounded-xl shadow-md animate-in";
+    div.draggable = true;
+    
+    if (enableTextFields) {
+      div.classList.add("text-input-item");
+      div.innerHTML = `
+        <img src="${image.src}" class="w-full rounded-lg" style="max-height: 150px; object-fit: cover;">
+        <input type="text" placeholder="Add text..." value="${image.text}" 
+          onchange="previewImages[${index}].text = this.value"
+          class="text-input-item-input">
+      `;
+    } else {
+      div.innerHTML = `<img src="${image.src}" class="w-full rounded-lg" style="max-height: 150px; object-fit: cover;">`;
+    }
+
+    preview.appendChild(div);
+    dragEvents(div, index);
+  });
+}
+
+function dragEvents(item, index) {
+  let draggedIndex = index;
+
+  item.addEventListener("dragstart", () => {
+    draggedIndex = Array.from(preview.children).indexOf(item);
+    item.classList.add("dragging");
+  });
+
+  item.addEventListener("dragend", () => {
+    item.classList.remove("dragging");
+  });
+
+  preview.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    const afterElement = getDragAfterElement(preview, e.clientY);
+    if (afterElement == null) {
+      preview.appendChild(item);
+    } else {
+      preview.insertBefore(item, afterElement);
+    }
+    
+    // Reorder the previewImages array
+    const allItems = Array.from(preview.children);
+    const newOrder = allItems.map((el, i) => {
+      if (el === item) return draggedIndex;
+      if (el === afterElement) return draggedIndex < i ? i + 1 : i - 1;
+      return i;
+    });
+  });
+}
+
+function getDragAfterElement(container, y) {
+  const draggableElements = [...container.querySelectorAll(".preview-item:not(.dragging)")];
+
+  return draggableElements.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    if (offset < 0 && offset > closest.offset) {
+      return { offset: offset, element: child };
+    } else {
+      return closest;
+    }
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+async function generatePDF() {
+  if (previewImages.length === 0) {
+    alert("Please upload at least one image");
+    return;
+  }
+
+  const name = document.getElementById("userName").value || "-";
+  const client = document.getElementById("clientName").value || "-";
+  const location = document.getElementById("location").value || "-";
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF();
+
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+
+  const margin = 8;
+  const gap = 3;
+  const headerHeight = 35; // Height of header section
+
+  // -------- HEADER (ONLY FIRST PAGE) --------
+  pdf.setFontSize(16);
+  pdf.text("CLAIM SHEET", pageWidth / 2, 10, { align: "center" });
+
+  pdf.setFontSize(9);
+  pdf.text(`Article: ${name}`, margin, 18);
+  pdf.text(`Client: ${client}`, margin, 22);
+  pdf.text(`Location: ${location}`, margin, 26);
+
+  // Determine layout: cols per row
+  let colsPerRow;
+  if (currentLayout === 3) {
+    colsPerRow = 3;
+  } else if (currentLayout === 4) {
+    colsPerRow = 4;
+  } else if (currentLayout === 5) {
+    colsPerRow = 4;
+  }
+
+  // Calculate image dimensions
+  const availableWidth = pageWidth - margin * 2 - gap * (colsPerRow - 1);
+  const imgWidth = availableWidth / colsPerRow;
+  const imgHeight = 35;  // Smaller height for more images per page
+  const textHeight = enableTextFields ? 8 : 0;
+  const totalRowHeight = imgHeight + textHeight + gap;
+
+  // Calculate max rows per page
+  const availablePageHeight = pageHeight - headerHeight - margin;
+  const maxRowsPerPage = Math.floor(availablePageHeight / totalRowHeight);
+
+  let currentPageIndex = 0;
+  let imagesOnCurrentPage = 0;
+
+  for (let i = 0; i < previewImages.length; i++) {
+    const imageData = previewImages[i];
+    const img = new Image();
+    img.src = imageData.src;
+
+    await new Promise(r => img.onload = r);
+
+    // Check if we need a new page
+    if (imagesOnCurrentPage > 0 && imagesOnCurrentPage % (maxRowsPerPage * colsPerRow) === 0) {
+      pdf.addPage();
+      currentPageIndex++;
+      imagesOnCurrentPage = 0;
+    }
+
+    // Calculate position within current page
+    const posInPage = imagesOnCurrentPage % (maxRowsPerPage * colsPerRow);
+    const colIndex = posInPage % colsPerRow;
+    const rowIndex = Math.floor(posInPage / colsPerRow);
+
+    const currentX = margin + colIndex * (imgWidth + gap);
+    const currentY = headerHeight + rowIndex * totalRowHeight;
+
+    // Add image
+    pdf.addImage(img.src, "JPEG", currentX, currentY, imgWidth, imgHeight);
+
+    // Add text if enabled
+    if (enableTextFields && imageData.text) {
+      pdf.setFontSize(6);
+      const textY = currentY + imgHeight + 1;
+      const wrappedText = pdf.splitTextToSize(imageData.text, imgWidth - 2);
+      pdf.text(wrappedText, currentX + 1, textY);
+    }
+
+    imagesOnCurrentPage++;
+  }
+
+  // Generate filename
+  const articleName = document.getElementById("userName").value || "Claim";
+  const timestamp = new Date().toISOString().slice(0, 10);
+  const filename = `${articleName}_${timestamp}.pdf`;
+  
+  let layoutName;
+  if (currentLayout === 3) {
+    layoutName = "3×3";
+  } else if (currentLayout === 4) {
+    layoutName = "4×3";
+  } else if (currentLayout === 5) {
+    layoutName = "4×4";
+  }
+  
+  pdf.save(filename);
+  
+  // Log the PDF generation
+  const clientName = document.getElementById("clientName").value;
+  const locationName = document.getElementById("location").value;
+  logPDFGeneration(articleName, clientName, locationName, layoutName, previewImages.length, enableTextFields, filename);
+  
+  // Show success message
+  alert(`✅ PDF generated successfully!\n📊 Total images: ${previewImages.length}\n📄 File: ${filename}`);
+}
+
+// Wait for Firebase to be ready and load logs
+setTimeout(() => {
+  if (window.firebaseReady) {
+    firebaseReady = true;
+    firebaseDb = window.firebaseDb;
+  }
+  loadPDFLogs(); // Load logs regardless of Firebase status
+}, 500);
+
+</script>
+
+</body>
+</html>
