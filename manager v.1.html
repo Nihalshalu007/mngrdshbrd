@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Articleship Allocation - Enterprise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface2: #263348;
+    --border: rgba(255,255,255,0.09);
+    --primary: #6366f1; --primary-hover: #4f46e5; --primary-soft: rgba(99,102,241,0.12);
+    --danger: #ef4444; --danger-hover: #dc2626;
+    --green: #10b981; --green-soft: rgba(16,185,129,0.12);
+    --text: #f1f5f9; --text-muted: #94a3b8; --text-dim: #64748b;
+    --radius: 12px; --radius-sm: 8px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',sans-serif;}
+  body{background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:32px 16px;}
+
+  /* ── Shared ── */
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  .hidden{display:none!important;}
+  .empty{text-align:center;padding:32px 16px;color:var(--text-dim);font-size:14px;}
+
+  /* ── Labels & inputs ── */
+  label.lbl{display:block;margin-bottom:5px;color:var(--text-muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;}
+  .input-group{margin-bottom:14px;}
+  input,select{width:100%;padding:10px 13px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;outline:none;transition:border-color .18s,box-shadow .18s;}
+  input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.18);}
+  input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(1);cursor:pointer;}
+  select option{background:var(--surface);}
+
+  /* ── Buttons ── */
+  button{background:var(--primary);color:#fff;padding:10px 20px;border-radius:var(--radius-sm);border:none;font-size:13.5px;font-weight:500;cursor:pointer;transition:background .16s,transform .12s;display:inline-flex;align-items:center;justify-content:center;gap:6px;width:auto;}
+  button:hover{background:var(--primary-hover);transform:translateY(-1px);}
+  button:active{transform:translateY(0);}
+  button:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+  button.danger{background:var(--danger);padding:6px 13px;font-size:12px;border-radius:6px;}
+  button.danger:hover{background:var(--danger-hover);}
+
+  /* ── Login card ── */
+  .login-wrap{width:100%;max-width:420px;animation:fadeIn .35s ease-out;}
+  .login-header{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;padding:28px 30px 20px;text-align:center;}
+  .login-icon{width:46px;height:46px;background:linear-gradient(135deg,#6366f1,#8b5cf6);border-radius:11px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px;box-shadow:0 6px 20px rgba(99,102,241,.35);}
+  .login-header h2{font-size:19px;margin:0 0 2px;}
+  .login-header p{color:var(--text-muted);font-size:13px;}
+  .login-tabs{display:flex;background:var(--surface);border-left:1px solid var(--border);border-right:1px solid var(--border);padding:0 12px;}
+  .login-tab{flex:1;padding:11px 8px;border-bottom:2px solid transparent;font-size:13px;font-weight:600;background:transparent;color:var(--text-dim);border-radius:0;border-top:none;border-left:none;border-right:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transform:none;}
+  .login-tab:hover{color:var(--text-muted);transform:none;}
+  .login-tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+  .login-tab.active:hover{transform:none;}
+  .login-body{background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:24px 30px 28px;}
+  .toggle-text{text-align:center;margin-top:14px;font-size:13px;color:var(--text-muted);}
+  .toggle-text a{color:var(--primary);cursor:pointer;font-weight:500;}
+
+  /* ── App shell ── */
+  .app-shell{width:100%;max-width:960px;animation:fadeIn .3s ease-out;}
+  .app-topbar{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:20px;}
+  .app-topbar h2{font-size:17px;font-weight:600;margin:0;}
+  .app-topbar p{color:var(--text-muted);font-size:12px;margin:2px 0 0;}
+  .btn-logout{background:rgba(255,255,255,.07);color:var(--text-muted);font-size:13px;padding:8px 16px;}
+  .btn-logout:hover{background:rgba(255,255,255,.12);transform:none;}
+
+  /* ── Manager nav ── */
+  .mgr-nav{display:flex;gap:4px;margin-bottom:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:6px;}
+  .mgr-tab{flex:1;padding:10px 8px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;background:transparent;color:var(--text-muted);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;width:auto;transform:none;transition:background .15s,color .15s;}
+  .mgr-tab:hover{background:rgba(255,255,255,.05);color:var(--text);transform:none;}
+  .mgr-tab.active{background:var(--primary-soft);color:#a5b4fc;}
+  .mgr-tab.active:hover{transform:none;}
+
+  /* ── Panels ── */
+  .panel-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:16px;}
+  .panel-section h3{font-size:14px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px;display:flex;align-items:center;gap:7px;}
+  .panel-section h3::before{content:'';display:inline-block;width:3px;height:14px;background:var(--primary);border-radius:2px;}
+  .form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;align-items:end;}
+  .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:end;}
+
+  /* ── Item rows ── */
+  .irow{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);margin-bottom:7px;transition:border-color .18s;}
+  .irow:hover{border-color:rgba(99,102,241,.3);}
+  .irow-info{display:flex;flex-direction:column;gap:3px;}
+  .irow-name{font-size:14px;font-weight:500;}
+  .irow-sub{font-size:12px;color:var(--text-muted);display:flex;gap:5px;flex-wrap:wrap;margin-top:2px;}
+  .irow-actions{display:flex;gap:7px;flex-shrink:0;}
+  .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500;}
+  .pill-p{background:var(--primary-soft);color:#a5b4fc;}
+  .pill-g{background:rgba(255,255,255,.06);color:var(--text-muted);}
+  .btn-edit{background:var(--primary-soft);color:#a5b4fc;border:1px solid rgba(99,102,241,.2);padding:6px 13px;font-size:12px;border-radius:6px;cursor:pointer;width:auto;transform:none;}
+  .btn-edit:hover{background:rgba(99,102,241,.22);transform:none;}
+
+  /* ── Alloc form ── */
+  .alloc-step{counter-increment:step;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 18px;margin-bottom:12px;position:relative;}
+  .step-label{font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+  .step-num{width:20px;height:20px;border-radius:50%;background:var(--primary-soft);color:#a5b4fc;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+
+  /* ── Article picker ── */
+  .picker{display:flex;flex-direction:column;gap:5px;max-height:280px;overflow-y:auto;margin-top:8px;}
+  .pick-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:border-color .14s,background .14s;user-select:none;}
+  .pick-item:hover{border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.07);}
+  .pick-item.sel{border-color:var(--primary);background:var(--primary-soft);}
+  .pick-item.busy{border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.05);cursor:default;opacity:.75;}
+  .pick-item.busy:hover{border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.05);}
+  /* busy-warn: manager can still select even if article is busy */
+  .pick-item.busy-warn{border-color:rgba(245,158,11,.25);background:rgba(245,158,11,.04);opacity:.9;}
+  .pick-item.busy-warn:hover{border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.09);}
+  .pick-left{display:flex;flex-direction:column;gap:2px;}
+  .pick-name{font-size:14px;font-weight:500;}
+  .pick-sub{font-size:12px;color:var(--text-muted);}
+  .pick-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+  .free{background:var(--green-soft);color:#34d399;}
+  .busy-badge{background:rgba(239,68,68,.12);color:#f87171;}
+  .sel-summary{margin-top:12px;padding:12px 15px;border-radius:var(--radius-sm);background:var(--primary-soft);border:1px solid rgba(99,102,241,.25);font-size:13px;color:#a5b4fc;}
+  .sel-summary span{font-weight:600;}
+  .picker-hint{font-size:13px;color:var(--text-dim);padding:14px 0 2px;display:flex;align-items:center;gap:7px;}
+
+  /* ── Alloc table ── */
+  .alloc-table-wrap{border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border);}
+  table{width:100%;border-collapse:collapse;background:var(--surface2);}
+  th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border);font-size:13.5px;}
+  th{background:var(--surface);font-weight:600;color:var(--text-dim);text-transform:uppercase;font-size:11px;letter-spacing:.05em;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:rgba(255,255,255,.015);}
+  .date-badge{background:var(--primary-soft);color:#a5b4fc;padding:3px 11px;border-radius:20px;font-size:12px;font-weight:500;white-space:nowrap;}
+  .status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;}
+  .status-active{background:rgba(99,102,241,.12);color:#a5b4fc;}
+  .status-completed{background:rgba(16,185,129,.15);color:#34d399;}
+  .btn-complete{background:rgba(16,185,129,.15);color:#34d399;border:1px solid rgba(16,185,129,.25);padding:6px 13px;font-size:12px;border-radius:6px;cursor:pointer;width:auto;transform:none;transition:background .15s;}
+  .btn-complete:hover{background:rgba(16,185,129,.28);transform:none;}
+  .btn-undo{background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.25);padding:6px 13px;font-size:12px;border-radius:6px;cursor:pointer;width:auto;transform:none;transition:background .15s;}
+  .btn-undo:hover{background:rgba(245,158,11,.25);transform:none;}
+
+  /* ── Article user view ── */
+  .alloc-card{background:var(--surface2);padding:14px 18px;border-radius:var(--radius-sm);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);}
+
+  /* ── Modal ── */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:999;padding:20px;}
+  .modal-bg.open{display:flex;}
+  .modal-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:26px;width:100%;max-width:400px;box-shadow:0 24px 64px rgba(0,0,0,.5);animation:fadeIn .18s ease-out;}
+  .modal-box h3{margin-bottom:16px;font-size:15px;}
+  .modal-acts{display:flex;gap:10px;margin-top:18px;justify-content:flex-end;}
+  .btn-cancel{background:rgba(255,255,255,.07);color:var(--text-muted);}
+  .btn-cancel:hover{background:rgba(255,255,255,.12);transform:none;}
+
+  /* ── Divider ── */
+  .panel-divider{height:1px;background:var(--border);margin:18px 0;}
+
+  /* ── Bird's Eye View ── */
+  /* ── Bird's Eye View ── */
+  .bev-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden;}
+  .bev-header{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;cursor:pointer;user-select:none;transition:background .15s;}
+  .bev-header:hover{background:rgba(255,255,255,.03);}
+  .bev-header-left{display:flex;align-items:center;gap:10px;}
+  .bev-title{font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:7px;}
+  .bev-title::before{content:'';display:inline-block;width:3px;height:13px;background:var(--primary);border-radius:2px;}
+  .bev-stats{display:flex;gap:6px;}
+  .bev-stat{font-size:11px;font-weight:600;padding:2px 9px;border-radius:10px;}
+  .bev-stat-free{background:rgba(16,185,129,.12);color:#34d399;}
+  .bev-stat-busy{background:rgba(239,68,68,.12);color:#f87171;}
+  .bev-toggle-btn{font-size:11px;font-weight:600;color:var(--text-dim);background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;padding:4px 11px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:background .14s,color .14s;width:auto;transform:none;}
+  .bev-toggle-btn:hover{background:rgba(255,255,255,.1);color:var(--text);transform:none;}
+  .bev-body{padding:12px 14px 14px;border-top:1px solid var(--border);}
+  .bev-legend{display:flex;align-items:center;gap:14px;margin-bottom:10px;padding:0 2px;}
+  .bev-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-dim);}
+  .bev-dot-lg{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .bev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:5px;}
+  .bev-card{display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);transition:border-color .14s;}
+  .bev-card:hover{border-color:rgba(99,102,241,.3);}
+  .bev-card.bev-free{border-left:2px solid rgba(16,185,129,.4);}
+  .bev-card.bev-busy{border-left:2px solid rgba(239,68,68,.35);}
+  .bev-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .bev-dot-free{background:#34d399;}
+  .bev-dot-busy{background:#f87171;}
+  .bev-name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .bev-client{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  /* Legacy compatibility */
+  .glass{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;width:100%;max-width:420px;}
+  .card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:18px;margin-bottom:14px;}
+  .card h3{font-size:13px;font-weight:600;margin-bottom:14px;color:var(--text-muted);}
+  .header-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+  .gauto{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;align-items:end;}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+  .grp-hdr td{background:rgba(99,102,241,.06)!important;font-weight:600;font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;padding:8px 16px!important;}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="loginDiv" class="login-wrap">
+  <div class="login-header">
+    <div class="login-icon">
+      <!-- Laptop / work icon -->
+      <svg width="22" height="22" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><polyline points="2 19 22 19"/><line x1="9" y1="19" x2="15" y2="19"/><line x1="12" y1="17" x2="12" y2="19"/></svg>
+    </div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#a5b4fc;margin-bottom:5px;">Varma &amp; Varma Chartered Accountants</div>
+    <h2>Articleship Portal</h2>
+    <p>Sign in to access your portal</p>
+  </div>
+  <div class="login-tabs">
+    <button id="tabMgrBtn" class="login-tab active" onclick="switchTab('manager')">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Manager
+    </button>
+    <button id="tabArtBtn" class="login-tab" onclick="switchTab('article')">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Article
+    </button>
+  </div>
+  <div id="mgrTabContent" class="login-body">
+    <div id="registerFields" class="hidden">
+      <div class="input-group"><label class="lbl">Full Name</label><input id="nameEl" type="text" placeholder="Your full name"></div>
+      <div class="input-group"><label class="lbl">Role</label><select id="roleEl"><option value="article">Article (User)</option><option value="manager">Manager (Admin)</option></select></div>
+    </div>
+    <div class="input-group"><label class="lbl">Email</label><input id="emailEl" type="email" placeholder="manager@example.com"></div>
+    <div class="input-group"><label class="lbl">Password</label><input id="passEl" type="password" placeholder="Enter password"></div>
+    <button id="loginBtn" style="width:100%;margin-top:4px;">Sign In as Manager</button>
+    <div class="toggle-text"><span id="toggleTextSpan">Don't have an account?</span> <a id="toggleAuthBtn">Register here</a></div>
+  </div>
+  <div id="artTabContent" class="login-body" style="display:none;">
+    <p style="color:var(--text-muted);font-size:13px;margin-bottom:18px;line-height:1.6;">View your allocations and assignments on the Article portal.</p>
+    <a href="https://nihalshalu007.github.io/Varmaarticles/" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px 20px;border-radius:var(--radius-sm);text-decoration:none;background:var(--primary);color:white;font-size:14px;font-weight:600;">
+      <svg width="15" height="15" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Open Article Portal
+    </a>
+    <p style="text-align:center;color:var(--text-dim);font-size:12px;margin-top:14px;">Wishing you a happy day.</p>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 18px;background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);">
+    <span style="font-size:10.5px;color:var(--text-dim);font-weight:500;">v1.0</span>
+    <span style="font-size:10.5px;color:var(--text-dim);">Developed by Nihal Shalu</span>
+  </div>
+</div>
+
+<script>
+function switchTab(t){
+  const mB=document.getElementById('tabMgrBtn'),aB=document.getElementById('tabArtBtn');
+  const mC=document.getElementById('mgrTabContent'),aC=document.getElementById('artTabContent');
+  if(t==='manager'){
+    mB.classList.add('active'); aB.classList.remove('active');
+    mC.style.display='block'; aC.style.display='none';
+  }else{
+    aB.classList.add('active'); mB.classList.remove('active');
+    aC.style.display='block'; mC.style.display='none';
+  }
+}
+</script>
+
+<!-- ═══ DASHBOARD ═══ -->
+<div id="appDiv" class="app-shell hidden">
+  <div class="app-topbar">
+    <div>
+      <h2>Articleship Dashboard</h2>
+      <p id="userRoleEl"></p>
+    </div>
+    <button id="logoutBtn" class="btn-logout">Sign Out</button>
+  </div>
+
+  <!-- ── MANAGER ── -->
+  <div id="managerDiv" class="hidden">
+    <nav class="mgr-nav">
+      <button id="mgrTab-clients"    class="mgr-tab active" onclick="switchMgrTab('clients')">🏢 Clients</button>
+      <button id="mgrTab-articles"   class="mgr-tab"        onclick="switchMgrTab('articles')">👤 Articles</button>
+      <button id="mgrTab-allocate"   class="mgr-tab"        onclick="switchMgrTab('allocate')">📌 New Allocation</button>
+      <button id="mgrTab-viewallocs" class="mgr-tab"        onclick="switchMgrTab('viewallocs')">📋 View Allocations</button>
+    </nav>
+
+    <!-- CLIENTS -->
+    <div id="mgrPanel-clients">
+      <div class="panel-section">
+        <h3>Add Client</h3>
+        <div class="form-row">
+          <div class="input-group" style="margin:0"><label class="lbl">Client Name *</label><input id="newClientNameEl" placeholder="Client name"></div>
+          <div class="input-group" style="margin:0"><label class="lbl">Location *</label><input id="newClientLocEl" placeholder="e.g. Bangalore"></div>
+          <div><button id="addClientBtn" style="width:100%;height:42px;">+ Add Client</button></div>
+        </div>
+      </div>
+      <div class="panel-section">
+        <h3>Client List</h3>
+        <div id="clientListDiv"><div class="empty">No clients added yet.</div></div>
+      </div>
+    </div>
+
+    <!-- ARTICLES -->
+    <div id="mgrPanel-articles" class="hidden">
+      <div class="panel-section">
+        <h3>Add Article</h3>
+        <div class="form-row">
+          <div class="input-group" style="margin:0"><label class="lbl">Article Name *</label><input id="newArticleEl" placeholder="Full name"></div>
+          <div class="input-group" style="margin:0"><label class="lbl">Location (optional)</label><input id="newArticleLocEl" placeholder="e.g. Chennai"></div>
+          <div class="input-group" style="margin:0">
+            <label class="lbl">Course</label>
+            <select id="newArticleCourseEl">
+              <option value="">— Select —</option>
+              <option>CA</option><option>CMA</option><option>BCOM</option><option>CS</option><option>ACCA</option>
+            </select>
+          </div>
+          <div><button id="addArticleBtn" style="width:100%;height:42px;">+ Add Article</button></div>
+        </div>
+      </div>
+      <div class="panel-section">
+        <h3>Article List</h3>
+        <div id="articleListDiv"><div class="empty">No articles added yet.</div></div>
+      </div>
+    </div>
+
+    <!-- NEW ALLOCATION -->
+    <div id="mgrPanel-allocate" class="hidden">
+
+      <!-- Bird's Eye View -->
+      <div class="bev-panel">
+        <div class="bev-header" onclick="toggleBirdsEye()">
+          <div class="bev-header-left">
+            <span class="bev-title">Article Overview</span>
+            <div class="bev-stats">
+              <span class="bev-stat" id="bevStatTotal" style="background:rgba(255,255,255,.06);color:var(--text-muted);">— Total</span>
+              <span class="bev-stat bev-stat-free" id="bevStatFree">— Available</span>
+              <span class="bev-stat bev-stat-busy" id="bevStatBusy">— Busy</span>
+            </div>
+          </div>
+          <button class="bev-toggle-btn" id="bevToggleBtn" onclick="event.stopPropagation();toggleBirdsEye()">
+            <svg id="bevChevron" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+            Hide
+          </button>
+        </div>
+        <div id="bevBody" class="bev-body">
+          <div class="bev-legend">
+            <span class="bev-legend-item"><span class="bev-dot-lg" style="background:#34d399;"></span> Available</span>
+            <span class="bev-legend-item"><span class="bev-dot-lg" style="background:#f87171;"></span> Busy (active allocation)</span>
+          </div>
+          <div class="bev-grid" id="birdsEyeGrid">
+            <div style="color:var(--text-dim);font-size:13px;grid-column:1/-1;padding:6px 0;">Loading…</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 280px;gap:16px;align-items:start;">
+
+        <!-- Left: form -->
+        <div class="panel-section" style="margin:0;">
+          <h3>New Allocation</h3>
+
+          <!-- Step 1: Dates + Client -->
+          <div class="alloc-step">
+            <div class="step-label"><span class="step-num">1</span> Set dates &amp; client</div>
+            <div class="g3">
+              <div class="input-group" style="margin:0"><label class="lbl">Start Date *</label><input type="date" id="allocStart"></div>
+              <div class="input-group" style="margin:0"><label class="lbl">End Date (optional)</label><input type="date" id="allocEnd"></div>
+              <div class="input-group" style="margin:0"><label class="lbl">Client *</label><select id="allocClient"><option value="">Select Client</option></select></div>
+            </div>
+          </div>
+
+          <!-- Step 2: Pick articles -->
+          <div class="alloc-step">
+            <div class="step-label"><span class="step-num">2</span> Select article(s) — busy articles can still be selected</div>
+            <div id="pickerHint" class="picker-hint">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Choose a start date above to load article availability
+            </div>
+            <div id="pickerSearchWrap" style="display:none;position:relative;margin-bottom:8px;">
+              <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;" width="13" height="13" fill="none" stroke="var(--text-dim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input id="pickerSearch" type="text" placeholder="Search articles…" style="padding:9px 13px 9px 32px;font-size:13px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);width:100%;outline:none;transition:border-color .18s,box-shadow .18s;" oninput="filterPicker(this.value)">
+              <button id="pickerSearchClear" onclick="clearPickerSearch()" style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;padding:2px 4px;line-height:1;width:auto;">&#x2715;</button>
+            </div>
+            <div id="articlePicker" class="picker"></div>
+            <div id="pickerNoResults" style="display:none;text-align:center;padding:18px;color:var(--text-dim);font-size:13px;">No articles match your search.</div>
+          </div>
+
+          <!-- Step 3: Confirm -->
+          <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
+            <button id="doAllocBtn" style="min-width:120px;">&#10003; Allocate</button>
+          </div>
+        </div>
+
+        <!-- Right: sticky summary -->
+        <div style="position:sticky;top:20px;">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;">
+            <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px;display:flex;align-items:center;gap:6px;">
+              <span style="width:3px;height:12px;background:var(--primary);border-radius:2px;display:inline-block;flex-shrink:0;"></span>
+              Selection Summary
+            </div>
+            <div style="margin-bottom:14px;">
+              <div style="font-size:10px;color:var(--text-dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Client</div>
+              <div id="summaryClient" style="font-size:13px;color:var(--text-muted);font-style:italic;">None selected</div>
+            </div>
+            <div style="margin-bottom:14px;">
+              <div style="font-size:10px;color:var(--text-dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;">Period</div>
+              <div id="summaryPeriod" style="font-size:13px;color:var(--text-muted);">—</div>
+            </div>
+            <div style="height:1px;background:var(--border);margin-bottom:14px;"></div>
+            <div>
+              <div style="font-size:10px;color:var(--text-dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
+                Articles
+                <span id="summaryCount" style="background:var(--primary-soft);color:#a5b4fc;padding:1px 7px;border-radius:10px;font-size:10px;">0</span>
+              </div>
+              <div id="summaryArticleList">
+                <div style="font-size:12px;color:var(--text-dim);font-style:italic;padding:6px 0;">No articles selected</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- VIEW ALLOCATIONS -->
+    <div id="mgrPanel-viewallocs" class="hidden">
+      <div class="panel-section">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <h3 style="margin:0;">All Allocations</h3>
+            <span id="allocCount" style="font-size:13px;color:var(--text-muted);background:var(--surface2);padding:4px 12px;border-radius:20px;border:1px solid var(--border);"></span>
+          </div>
+          <button id="completeAllAllocsBtn" class="btn-complete" style="font-size:12px;padding:6px 14px;display:none;">✓ Mark All as Completed</button>
+        </div>
+        <div class="alloc-table-wrap">
+          <table>
+            <thead><tr><th>Article(s)</th><th>Client</th><th>Period</th><th>Status</th><th style="text-align:right;">Action</th></tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div><!-- /managerDiv -->
+
+  <!-- ── ARTICLE USER ── -->
+  <div id="articlePanel" class="hidden">
+    <div class="panel-section"><h3>My Allocations</h3><div id="myDataDiv"></div></div>
+  </div>
+</div><!-- /appDiv -->
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal-bg">
+  <div class="modal-box">
+    <h3 id="editTitle">Edit</h3>
+    <div id="editBody"></div>
+    <div class="modal-acts">
+      <button class="btn-cancel" id="editCancelBtn" style="padding:10px 20px;border-radius:10px;border:none;font-size:14px;cursor:pointer;">Cancel</button>
+      <button id="editSaveBtn" style="padding:10px 20px;border-radius:10px;font-size:14px;font-weight:500;">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FIREBASE LOGIC ═══ -->
+<script type="module">
+import { initializeApp }    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getDatabase, ref, push, set, onValue, remove, get, update }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey:"AIzaSyAN4QEBtD6ua2gWhKh__tmxrpARozKaCz0",
+  authDomain:"varma-allocation.firebaseapp.com",
+  databaseURL:"https://varma-allocation-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"varma-allocation",
+  storageBucket:"varma-allocation.firebasestorage.app",
+  messagingSenderId:"1015226386601",
+  appId:"1:1015226386601:web:3828848bb0b7acee6441b8"
+};
+const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getDatabase(app);
+
+const UNDO_WINDOW_MS = 2 * 24 * 60 * 60 * 1000; // 2 days
+// Tracks in-window completions so they survive Firebase onValue re-fires.
+// Maps each Firebase allocation key → { completedAt, groupKeys[], prevEndDates{} }
+const pendingCompletions = {};
+
+function isUndoAvailable(completedAt){ return !!(completedAt && (Date.now()-new Date(completedAt).getTime())<UNDO_WINDOW_MS); }
+
+
+// Move a completed group to history/ node and remove from allocations/
+async function expireGroupToHistory(groupKeys){
+  if(!cachedAllocSnap||!cachedAllocSnap.exists()) return;
+  for(const k of groupKeys){
+    try{
+      let record=null;
+      cachedAllocSnap.forEach(c=>{ if(c.key===k) record=c.val(); });
+      if(record){
+        await set(ref(db,'history/'+k), {...record, status:'Completed', _movedAt: new Date().toISOString()});
+      }
+      await remove(ref(db,'allocations/'+k));
+    }catch(e){ console.error('expireGroupToHistory error:',e); }
+  }
+}
+
+// On page load + periodic: expire any completed allocations past the 2-day window
+async function expireCompletedAllocations(){
+  if(!cachedAllocSnap||!cachedAllocSnap.exists()) return;
+  // Collect groups with _completedAt
+  const groups={};
+  cachedAllocSnap.forEach(c=>{
+    const v=c.val();
+    // Only expire records that are still marked completed AND have _completedAt.
+    // Skips any record mid-undo where status may already be 'active'.
+    if(!v||!v._completedAt||(v.status||'').toLowerCase()!=='completed') return;
+    const gk=v.teamId?`team_${v.teamId}`:`solo_${c.key}`;
+    if(!groups[gk]) groups[gk]={keys:[],completedAt:v._completedAt};
+    groups[gk].keys.push(c.key);
+  });
+  for(const g of Object.values(groups)){
+    if(!isUndoAvailable(g.completedAt)){
+      // Remove from pendingCompletions
+      g.keys.forEach(k=>delete pendingCompletions[k]);
+      await expireGroupToHistory(g.keys);
+    }
+  }
+}
+
+// Seeder disabled to prevent duplicate data on login
+// Run manually via the "Seed Default Data" button in the manager panel if needed
+
+
+// ── One-time duplicate cleanup (ONLY called by manual button, self-disables via meta flag) ──
+async function runDedupe(){
+  try{
+    const dedupeRef=ref(db,'meta/deduped');
+    const ds=await get(dedupeRef);
+    if(ds.exists()){alert("Cleanup already run. No changes made.");return;}
+    const snap=await get(ref(db,'articles'));
+    let removed=0;
+    if(snap.exists()){
+      const seen=new Set();
+      const removals=[];
+      snap.forEach(c=>{
+        const name=(c.val().name||'').toLowerCase().trim();
+        if(seen.has(name)){removals.push(remove(ref(db,'articles/'+c.key)));}
+        else{seen.add(name);}
+      });
+      if(removals.length){await Promise.all(removals);removed=removals.length;}
+    }
+    await set(dedupeRef,true);
+    alert(`Cleanup complete! Removed ${removed} duplicate(s).`);
+  }catch(e){console.error('Dedupe error:',e);alert("Cleanup error: "+e.message);}
+}
+
+// ── Helpers ───────────────────────────────────────────────────
+const getEndMs  = d => d ? new Date(d).getTime() : Infinity;
+const getAllocEndMs = d => d ? new Date(d).getTime() : Infinity; // ongoing alloc = always busy until explicitly ended
+const fmtPeriod = (s,e) => e ? `${s} → ${e}` : `${s} → Ongoing`;
+
+// Builds dual lookup maps (key-based NEW records + name-based LEGACY records)
+function buildMaps(cSnap, aSnap) {
+  const cByKey={}, cByName={}, aByKey={}, aByName={};
+  if(cSnap&&cSnap.exists()) cSnap.forEach(c=>{
+    const d=c.val(), lbl=d.location?`${d.name} · ${d.location}`:d.name;
+    cByKey[c.key]=lbl; cByName[d.name]=lbl;
+  });
+  if(aSnap&&aSnap.exists()) aSnap.forEach(c=>{
+    aByKey[c.key]=c.val().name; aByName[c.val().name]=c.val().name;
+  });
+  return {
+    rc: v => cByKey[v]||cByName[v]||v,
+    ra: v => aByKey[v]||aByName[v]||v,
+    cByKey,cByName,aByKey,aByName
+  };
+}
+
+// ── DOM ───────────────────────────────────────────────────────
+const loginDiv=document.getElementById('loginDiv'), appDiv=document.getElementById('appDiv');
+const managerDiv=document.getElementById('managerDiv'), articlePanel=document.getElementById('articlePanel');
+const emailEl=document.getElementById('emailEl'), passEl=document.getElementById('passEl');
+const nameEl=document.getElementById('nameEl'), roleEl=document.getElementById('roleEl');
+const loginBtn=document.getElementById('loginBtn'), logoutBtn=document.getElementById('logoutBtn');
+const registerFields=document.getElementById('registerFields');
+const toggleAuthBtn=document.getElementById('toggleAuthBtn'), toggleTextSpan=document.getElementById('toggleTextSpan');
+const tbody=document.getElementById('tbody'), myDataDiv=document.getElementById('myDataDiv');
+const userRoleEl=document.getElementById('userRoleEl');
+
+let currentRole='', currentUserName='', isRegMode=false;
+
+// ── Manager tab switcher ──────────────────────────────────────
+window.switchMgrTab=function(tab){
+  ['clients','articles','allocate','viewallocs'].forEach(t=>{
+    document.getElementById('mgrPanel-'+t).classList.add('hidden');
+    document.getElementById('mgrTab-'+t).classList.remove('active');
+  });
+  document.getElementById('mgrPanel-'+tab).classList.remove('hidden');
+  document.getElementById('mgrTab-'+tab).classList.add('active');
+  // Refresh picker when opening allocate tab so newly added articles always appear
+  if(tab==='allocate'){renderBirdsEye();if(document.getElementById('allocStart').value)refreshPicker();}
+};
+
+// ── Auth UI toggle ────────────────────────────────────────────
+toggleAuthBtn.addEventListener('click',()=>{
+  isRegMode=!isRegMode;
+  if(isRegMode){loginBtn.textContent='Register';registerFields.classList.remove('hidden');toggleTextSpan.textContent='Already have an account?';toggleAuthBtn.textContent='Sign in here';}
+  else{loginBtn.textContent='Sign In as Manager';registerFields.classList.add('hidden');toggleTextSpan.textContent="Don't have an account?";toggleAuthBtn.textContent='Register here';}
+});
+
+// ── Login/Register ────────────────────────────────────────────
+loginBtn.addEventListener('click',async()=>{
+  const email=emailEl.value.trim(), pass=passEl.value;
+  if(!email||!pass) return alert("Enter email and password");
+  if(isRegMode){
+    const name=nameEl.value.trim(); if(!name) return alert("Enter your name");
+    loginBtn.textContent='Registering…';loginBtn.disabled=true;
+    try{ const c=await createUserWithEmailAndPassword(auth,email,pass); await set(ref(db,'users/'+c.user.uid),{name,email,role:roleEl.value}); alert("Account created!"); }
+    catch(e){alert("Registration failed: "+e.message);}
+    finally{loginBtn.textContent='Register';loginBtn.disabled=false;}
+  }else{
+    loginBtn.textContent='Signing in…';loginBtn.disabled=true;
+    try{
+      const c=await signInWithEmailAndPassword(auth,email,pass);
+      const s=await get(ref(db,'users/'+c.user.uid));
+      if(!s.exists()){const dn=email.split('@')[0],dr=["manager2"].includes(dn)?"manager":"article";await set(ref(db,'users/'+c.user.uid),{name:dn,email,role:dr});currentRole=dr;currentUserName=dn;alert(`Welcome! Set up as ${dr.toUpperCase()}.`);}
+      else{currentRole=s.val().role;currentUserName=s.val().name||email;}
+    }catch(e){alert("Login failed: "+e.message);}
+    finally{loginBtn.textContent='Sign In as Manager';loginBtn.disabled=false;}
+  }
+});
+
+logoutBtn.addEventListener('click',()=>{if(confirm("Log out?"))signOut(auth);});
+
+// ── Auth state ────────────────────────────────────────────────
+onAuthStateChanged(auth,async user=>{
+  if(!user){loginDiv.classList.remove('hidden');appDiv.classList.add('hidden');currentRole='';currentUserName='';emailEl.value='';passEl.value='';return;}
+  const s=await get(ref(db,'users/'+user.uid));
+  if(s.exists()){currentRole=s.val().role;currentUserName=s.val().name||user.email;}
+  else{
+    const dn = user.email.split('@')[0];
+    const dr = ["manager2"].includes(dn) ? "manager" : "article";
+    // 🔒 Only create ONCE safely
+    await update(ref(db,'users/'+user.uid),{
+      name: dn,
+      email: user.email,
+      role: dr
+    });
+    currentRole=dr;currentUserName=dn;
+  }
+  userRoleEl.textContent=`Logged in as ${currentUserName} (${currentRole.toUpperCase()})`;
+  loginDiv.classList.add('hidden');appDiv.classList.remove('hidden');
+  if(currentRole==='manager'){
+    managerDiv.classList.remove('hidden');articlePanel.classList.add('hidden');
+    initLiveListeners();
+    initMgrListeners();
+    loadClientList();loadArticleList();loadAllocClientDrop();loadAllocTable();
+  }else{
+    managerDiv.classList.add('hidden');articlePanel.classList.remove('hidden');
+    const as=await get(ref(db,'articles'));
+    let rn=currentUserName;
+    if(as.exists())as.forEach(c=>{if((c.val().name||'').toLowerCase()===currentUserName.toLowerCase())rn=c.val().name;});
+    loadMyAllocs(rn);
+  }
+});
+
+// ── Edit modal ────────────────────────────────────────────────
+let editState={};
+const editModal=document.getElementById('editModal');
+document.getElementById('editCancelBtn').addEventListener('click',()=>editModal.classList.remove('open'));
+editModal.addEventListener('click',e=>{if(e.target===editModal)editModal.classList.remove('open');});
+
+document.getElementById('editSaveBtn').addEventListener('click',async()=>{
+  const name=document.getElementById('editName').value.trim();
+  if(!name) return alert("Name is required");
+  if(editState.type==='client'){
+    const loc=document.getElementById('editLoc').value.trim();
+    if(!loc) return alert("Location is required");
+    await update(ref(db,'clients/'+editState.key),{name,location:loc});
+  }else{
+    const loc=document.getElementById('editLoc').value.trim();
+    const course=document.getElementById('editCourse').value;
+    await update(ref(db,'articles/'+editState.key),{name,location:loc,course});
+  }
+  editModal.classList.remove('open');
+});
+
+window.openEdit=function(type,key,dj){
+  editState={type,key};
+  const d=JSON.parse(dj.replace(/&quot;/g,'"'));
+  document.getElementById('editTitle').textContent=type==='client'?'Edit Client':'Edit Article';
+  if(type==='client'){
+    document.getElementById('editBody').innerHTML=`<div class="input-group"><label class="lbl">Name *</label><input id="editName" value="${d.name||''}"></div><div class="input-group"><label class="lbl">Location *</label><input id="editLoc" value="${d.location||''}"></div>`;
+  }else{
+    document.getElementById('editBody').innerHTML=`
+      <div class="input-group"><label class="lbl">Name *</label><input id="editName" value="${d.name||''}"></div>
+      <div class="input-group"><label class="lbl">Location (optional)</label><input id="editLoc" value="${d.location||''}"></div>
+      <div class="input-group"><label class="lbl">Course</label><select id="editCourse"><option value="">— Select —</option>${['CA','CMA','BCOM','CS','ACCA'].map(c=>`<option${d.course===c?' selected':''}>${c}</option>`).join('')}</select></div>`;
+  }
+  editModal.classList.add('open');
+};
+
+window.deleteItem=function(node,key){
+  if(confirm(`Delete this ${node==='clients'?'client':'article'}?`))remove(ref(db,node+'/'+key));
+};
+
+// ── Client list ───────────────────────────────────────────────
+function loadClientList(){
+  onValue(ref(db,'clients'),snap=>{
+    const el=document.getElementById('clientListDiv');
+    if(!snap.exists()){el.innerHTML='<div class="empty">No clients added yet.</div>';return;}
+    let html='';
+    snap.forEach(c=>{
+      const d=c.val(), dj=JSON.stringify({name:d.name,location:d.location||''}).replace(/"/g,'&quot;');
+      html+=`<div class="irow"><div class="irow-info"><span class="irow-name">${d.name} <span class="pill pill-g">${d.location||''}</span></span></div>
+      <div class="irow-actions"><button class="btn-edit" onclick='openEdit("client","${c.key}","${dj}")'>Edit</button><button class="danger" onclick='deleteItem("clients","${c.key}")'>Delete</button></div></div>`;
+    });
+    el.innerHTML=html;
+  });
+}
+
+// ── Article list ──────────────────────────────────────────────
+function loadArticleList(){
+  onValue(ref(db,'articles'),snap=>{
+    const el=document.getElementById('articleListDiv');
+    if(!snap.exists()){el.innerHTML='<div class="empty">No articles added yet.</div>';return;}
+    let html='';
+    snap.forEach(c=>{
+      const d=c.val(), dj=JSON.stringify({name:d.name,location:d.location||'',course:d.course||''}).replace(/"/g,'&quot;');
+      html+=`<div class="irow"><div class="irow-info"><span class="irow-name">${d.name}</span>
+      <span class="irow-sub">${d.location?`<span class="pill pill-g">${d.location}</span>`:''}${d.course?`<span class="pill pill-p">${d.course}</span>`:''}</span></div>
+      <div class="irow-actions"><button class="btn-edit" onclick='openEdit("article","${c.key}","${dj}")'>Edit</button><button class="danger" onclick='deleteItem("articles","${c.key}")'>Delete</button></div></div>`;
+    });
+    el.innerHTML=html;
+  });
+}
+
+// ── Add client / article ──────────────────────────────────────
+let listenersInited=false;
+function initMgrListeners(){
+  if(listenersInited)return; listenersInited=true;
+  document.getElementById('addClientBtn').addEventListener('click',()=>{
+    const name=document.getElementById('newClientNameEl').value.trim(), loc=document.getElementById('newClientLocEl').value.trim();
+    if(!name)return alert("Client name is required"); if(!loc)return alert("Location is required");
+    push(ref(db,'clients'),{name,location:loc});
+    document.getElementById('newClientNameEl').value=''; document.getElementById('newClientLocEl').value='';
+  });
+  document.getElementById('addArticleBtn').addEventListener('click',()=>{
+    const name=document.getElementById('newArticleEl').value.trim(), loc=document.getElementById('newArticleLocEl').value.trim(), course=document.getElementById('newArticleCourseEl').value;
+    if(!name)return alert("Article name is required");
+    push(ref(db,'articles'),{name,location:loc||'',course:course||''});
+    document.getElementById('newArticleEl').value=''; document.getElementById('newArticleLocEl').value=''; document.getElementById('newArticleCourseEl').value='';
+  });
+}
+
+// ── Allocation client dropdown ────────────────────────────────
+function loadAllocClientDrop(){
+  onValue(ref(db,'clients'),snap=>{
+    const sel=document.getElementById('allocClient');
+    let html='<option value="">Select Client</option>';
+    if(snap.exists())snap.forEach(c=>{const d=c.val(),lbl=d.location?`${d.name} · ${d.location}`:d.name;html+=`<option value="${c.key}">${lbl}</option>`;});
+    sel.innerHTML=html;
+  });
+}
+
+// ── Smart article picker ──────────────────────────────────────
+let pickerData=[], selKeys=new Set();
+
+function refreshPicker(){
+  if(!cachedArticleSnap){
+  console.log('Articles still loading...');
+  return;
+}
+  const sd=document.getElementById('allocStart').value, ed=document.getElementById('allocEnd').value;
+  const hint=document.getElementById('pickerHint'), pickerEl=document.getElementById('articlePicker');
+  if(!sd){hint.style.display='';pickerEl.innerHTML='';const sw=document.getElementById('pickerSearchWrap');if(sw)sw.style.display='none';const nr=document.getElementById('pickerNoResults');if(nr)nr.style.display='none';return;}
+  hint.style.display='none';
+  const startMs=new Date(sd).getTime(), endMs=ed ? new Date(ed).getTime() : startMs;
+
+  const busyKeys=new Set();
+  if(cachedAllocSnap&&cachedAllocSnap.exists()){
+    // First pass: compute which teamIds/solo groups are completed
+    const completedGroups=new Set();
+    cachedAllocSnap.forEach(c=>{
+      const a=c.val();
+      if((a.status||'').toLowerCase()==='completed'){
+        const gk=a.teamId ? `team_${a.teamId}` : `solo_${c.key}`;
+        completedGroups.add(gk);
+      }
+    });
+    // Second pass: skip any record whose group is completed
+    cachedAllocSnap.forEach(c=>{
+      const a=c.val();
+      const gk=a.teamId ? `team_${a.teamId}` : `solo_${c.key}`;
+      // Skip completed groups — they don't count as busy
+      if(completedGroups.has(gk)) return;
+      const allocStart=new Date(a.date).getTime();
+      const allocEnd=getAllocEndMs(a.endDate||'');
+      if(allocStart<=endMs && allocEnd>=startMs){
+        if(cachedArticleSnap&&cachedArticleSnap.exists()){
+          cachedArticleSnap.forEach(c=>{
+            if(c.key===a.article||c.val().name===a.article) busyKeys.add(c.key);
+          });
+        }
+      }
+    });
+  }
+
+  pickerData=[];
+  cachedArticleSnap.forEach(c=>{
+    const data=c.val();
+    if(data&&data.name) pickerData.push({key:c.key,name:data.name,location:data.location||'',course:data.course||''});
+  });
+  console.log("Picker data count:", pickerData.length);
+  console.log('Busy keys count:', busyKeys.size);
+  // Manager override: keep selections even if now busy
+  renderPicker(busyKeys);
+  updateSelSummary();
+  // Show search box and re-apply any existing query
+  const sw=document.getElementById('pickerSearchWrap');if(sw)sw.style.display='';
+  if(pickerSearchQuery) filterPicker(pickerSearchQuery);
+}
+
+function renderBirdsEye(){
+  const grid=document.getElementById('birdsEyeGrid');
+  if(!grid) return;
+  const statFree=document.getElementById('bevStatFree');
+  const statBusy=document.getElementById('bevStatBusy');
+
+  if(!cachedArticleSnap||!cachedArticleSnap.exists()){
+    grid.innerHTML='<div style="color:var(--text-dim);font-size:12px;grid-column:1/-1;padding:4px 0;">No articles found.</div>';
+    return;
+  }
+
+  // Build group-level completed set
+  const completedGroups=new Set();
+  if(cachedAllocSnap&&cachedAllocSnap.exists()){
+    cachedAllocSnap.forEach(c=>{
+      const a=c.val();
+      if((a.status||'').toLowerCase()==='completed'){
+        completedGroups.add(a.teamId?`team_${a.teamId}`:`solo_${c.key}`);
+      }
+    });
+  }
+
+  // Build map: articleKey → current client name (active allocs only, respects selected date)
+  const articleClient={};
+  if(cachedAllocSnap&&cachedAllocSnap.exists()&&cachedClientSnap&&cachedClientSnap.exists()){
+    const clientMap={};
+    cachedClientSnap.forEach(c=>{
+      const d=c.val();
+      clientMap[c.key]=d.location?`${d.name} · ${d.location}`:d.name;
+    });
+    // Use the selected start date if available, otherwise fall back to today
+    const selDateStr=document.getElementById('allocStart')?document.getElementById('allocStart').value:'';
+    const refDate=selDateStr?new Date(selDateStr):new Date();
+    refDate.setHours(0,0,0,0);
+    cachedAllocSnap.forEach(c=>{
+      const a=c.val();
+      const gk=a.teamId?`team_${a.teamId}`:`solo_${c.key}`;
+      if(completedGroups.has(gk)) return;
+      // Parse dates as local midnight to avoid UTC offset shifting the day
+      const parseLocal=s=>{if(!s)return null;const[y,m,d]=s.split('-').map(Number);const dt=new Date(y,m-1,d);dt.setHours(0,0,0,0);return dt;};
+      // Allocation must have started on or before refDate (inclusive)
+      const allocStart=parseLocal(a.date);
+      if(!allocStart||allocStart>refDate) return;
+      // Allocation must not have ended before refDate (inclusive)
+      const allocEnd=parseLocal(a.endDate||'');
+      if(allocEnd&&allocEnd<refDate) return;
+      if(a.article){
+        articleClient[a.article]=clientMap[a.client]||a.client||'Unknown';
+      }
+    });
+  }
+
+  let freeCount=0, busyCount=0;
+  let html='';
+  let count=0;
+  cachedArticleSnap.forEach(c=>{
+    if(count>=50) return;
+    const d=c.val(); if(!d||!d.name) return;
+    count++;
+    const clientName=articleClient[c.key];
+    const isBusy=!!clientName;
+    if(isBusy) busyCount++; else freeCount++;
+    const cardClass=isBusy?'bev-card bev-busy':'bev-card bev-free';
+    const dotClass=isBusy?'bev-dot bev-dot-busy':'bev-dot bev-dot-free';
+    const clientLabel=isBusy?clientName:'Available';
+    const clientColor=isBusy?'#f87171':'#34d399';
+    html+=`<div class="${cardClass}" title="${d.name}${isBusy?' → '+clientName:''}">
+      <span class="${dotClass}"></span>
+      <div style="flex:1;min-width:0;">
+        <div class="bev-name">${d.name}</div>
+        <div class="bev-client" style="color:${clientColor};">${clientLabel}</div>
+      </div>
+    </div>`;
+  });
+  grid.innerHTML=html||'<div style="color:var(--text-dim);font-size:12px;grid-column:1/-1;">No articles.</div>';
+  const statTotal=document.getElementById('bevStatTotal');
+  if(statTotal) statTotal.textContent=`${freeCount+busyCount} Total`;
+  if(statFree) statFree.textContent=`${freeCount} Available`;
+  if(statBusy) statBusy.textContent=`${busyCount} Busy`;
+}
+
+let bevVisible=true;
+window.toggleBirdsEye=function(){
+  const body=document.getElementById('bevBody');
+  const btn=document.getElementById('bevToggleBtn');
+  const chevron=document.getElementById('bevChevron');
+  if(!body||!btn) return;
+  bevVisible=!bevVisible;
+  if(bevVisible){
+    body.style.display='';
+    btn.innerHTML=`<svg id="bevChevron" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg> Hide`;
+  }else{
+    body.style.display='none';
+    btn.innerHTML=`<svg id="bevChevron" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg> Show`;
+  }
+};
+
+
+function renderPicker(busyKeys){
+  const el=document.getElementById('articlePicker');
+  if(!pickerData.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-secondary);font-size:13px;">No articles found.</div>';return;}
+  el.innerHTML=pickerData.map(a=>{
+    const isBusy=busyKeys.has(a.key), isSel=selKeys.has(a.key);
+    const sub=[a.location,a.course].filter(Boolean).join(' · ');
+    // Managers can select busy articles — badge warns but doesn't block
+    const badge=isBusy?`<span class="pick-badge busy-badge">● Busy</span>`:`<span class="pick-badge free">● Available</span>`;
+    return `<div class="pick-item${isBusy&&!isSel?' busy-warn':''}${isSel?' sel':''}" data-key="${a.key}" data-busy="${isBusy}" onclick="togglePick(this)">
+      <div class="pick-left"><span class="pick-name">${a.name}</span>${sub?`<span class="pick-sub">${sub}</span>`:''}</div>
+      ${badge}</div>`;
+  }).join('');
+}
+
+// ── Article picker search ────────────────────────────────────
+let pickerSearchQuery='';
+
+window.filterPicker=function(q){
+  pickerSearchQuery=q.trim().toLowerCase();
+  const wrap=document.getElementById('pickerSearchWrap');
+  const clearBtn=document.getElementById('pickerSearchClear');
+  const noRes=document.getElementById('pickerNoResults');
+  if(clearBtn) clearBtn.style.display=pickerSearchQuery?'':'none';
+  const items=document.querySelectorAll('#articlePicker .pick-item');
+  let visible=0;
+  items.forEach(el=>{
+    const name=(el.querySelector('.pick-name')||el).textContent.toLowerCase();
+    const sub=(el.querySelector('.pick-sub')||{textContent:''}).textContent.toLowerCase();
+    const match=!pickerSearchQuery||name.includes(pickerSearchQuery)||sub.includes(pickerSearchQuery);
+    el.style.display=match?'':'none';
+    if(match) visible++;
+  });
+  if(noRes) noRes.style.display=(visible===0&&pickerSearchQuery)?'':'none';
+};
+
+window.clearPickerSearch=function(){
+  const inp=document.getElementById('pickerSearch');
+  if(inp){inp.value='';filterPicker('');}
+};
+
+// ── Edit modal article search ─────────────────────────────────
+window.filterEditArticles=function(q){
+  const ql=q.trim().toLowerCase();
+  const clearBtn=document.getElementById('editArticleSearchClear');
+  const noRes=document.getElementById('editArticleNoResults');
+  if(clearBtn) clearBtn.style.display=ql?'':'none';
+  const items=document.querySelectorAll('#allocEditArticles label');
+  let visible=0;
+  items.forEach(el=>{
+    const text=el.textContent.toLowerCase();
+    const match=!ql||text.includes(ql);
+    el.style.display=match?'':'none';
+    if(match) visible++;
+  });
+  if(noRes) noRes.style.display=(visible===0&&ql)?'':'none';
+};
+
+window.clearEditArticleSearch=function(){
+  const inp=document.getElementById('editArticleSearch');
+  if(inp){inp.value='';filterEditArticles('');}
+};
+
+window.togglePick=function(el){
+  // Managers can select busy articles — no block
+  const k=el.dataset.key;
+  if(selKeys.has(k)){selKeys.delete(k);el.classList.remove('sel');}
+  else{selKeys.add(k);el.classList.add('sel');}
+  updateSelSummary();
+};
+
+function updateSelSummary(){
+  const countEl=document.getElementById('summaryCount');
+  const listEl=document.getElementById('summaryArticleList');
+  if(!countEl||!listEl) return;
+  const selected=pickerData.filter(a=>selKeys.has(a.key));
+  countEl.textContent=selected.length;
+  if(!selected.length){
+    listEl.innerHTML='<div style="font-size:12px;color:var(--text-dim);font-style:italic;padding:6px 0;">No articles selected</div>';
+  }else{
+    listEl.innerHTML=selected.map(a=>{
+      const isBusy=a.busy;
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);margin-bottom:5px;">
+        <span style="font-size:13px;font-weight:500;">${a.name}</span>
+        <button onclick="removeSel('${a.key}')" style="background:none;border:none;color:var(--text-dim);font-size:14px;padding:0 2px;cursor:pointer;line-height:1;" title="Remove">&#x2715;</button>
+      </div>`;
+    }).join('');
+  }
+  updateSummaryMeta();
+}
+
+window.removeSel=function(k){
+  selKeys.delete(k);
+  // deselect in picker UI
+  const el=document.querySelector(`[data-key="${k}"]`);
+  if(el) el.classList.remove('sel');
+  updateSelSummary();
+};
+
+function updateSummaryMeta(){
+  const clientEl=document.getElementById('summaryClient');
+  const periodEl=document.getElementById('summaryPeriod');
+  if(!clientEl||!periodEl) return;
+  const ck=document.getElementById('allocClient');
+  const clientText=ck&&ck.selectedIndex>0?ck.options[ck.selectedIndex].text:'None selected';
+  clientEl.textContent=clientText;
+  clientEl.style.fontStyle=ck&&ck.selectedIndex>0?'normal':'italic';
+  clientEl.style.color=ck&&ck.selectedIndex>0?'var(--text)':'var(--text-muted)';
+  const sd=document.getElementById('allocStart').value;
+  const ed=document.getElementById('allocEnd').value;
+  periodEl.textContent=sd?(ed?`${sd} → ${ed}`:`${sd} → Ongoing`):'—';
+}
+
+document.getElementById('allocStart').addEventListener('change',()=>{refreshPicker();updateSummaryMeta();renderBirdsEye();});
+document.getElementById('allocEnd').addEventListener('change',()=>{if(document.getElementById('allocStart').value)refreshPicker();updateSummaryMeta();renderBirdsEye();});
+document.getElementById('allocClient').addEventListener('change',updateSummaryMeta);
+
+// Live caches — populated only after login via initLiveListeners()
+let cachedArticleSnap=null, cachedClientSnap=null, cachedAllocSnap=null;
+let liveListenersInited=false;
+function initLiveListeners(){
+  if(liveListenersInited) return;
+  liveListenersInited=true;
+  onValue(ref(db,'articles'),snap=>{
+    cachedArticleSnap=snap;
+    rebuildMaps();
+    renderBirdsEye();
+    if(snap.exists()&&snap.size>0){
+      if(document.getElementById('allocStart').value) refreshPicker();
+    }
+  });
+  onValue(ref(db,'clients'),snap=>{
+    cachedClientSnap=snap;
+    rebuildMaps();
+    renderBirdsEye();
+  });
+  onValue(ref(db,'allocations'),snap=>{
+    cachedAllocSnap=snap;
+    // Seed pendingCompletions from Firebase rows still within undo window
+    if(snap&&snap.exists()){
+      snap.forEach(c=>{
+        const v=c.val();
+        // Only seed if still completed — prevents re-seeding a record mid-undo
+        if(v&&v._completedAt&&(v.status||'').toLowerCase()==='completed'&&isUndoAvailable(v._completedAt)){
+          if(!pendingCompletions[c.key]){
+            pendingCompletions[c.key]={completedAt:v._completedAt};
+          }
+        }
+      });
+      // Expire any completed rows past the 2-day window → move to history/
+      expireCompletedAllocations();
+    }
+    renderAllocTable();
+    renderBirdsEye();
+    if(document.getElementById('allocStart').value) refreshPicker();
+  });
+}
+
+// ── Allocate ──────────────────────────────────────────────────
+document.getElementById('doAllocBtn').addEventListener('click',async()=>{
+  const sd=document.getElementById('allocStart').value;
+  const ed=document.getElementById('allocEnd').value;
+  const ck=document.getElementById('allocClient').value;
+  if(!sd)      return alert("Pick a start date");
+  if(!ck)      return alert("Select a client");
+  if(!selKeys.size) return alert("Select at least one article");
+  const btn=document.getElementById('doAllocBtn');
+  btn.textContent='Saving…';btn.disabled=true;
+  try{
+    if(selKeys.size===1){
+      await push(ref(db,'allocations'),{article:[...selKeys][0],client:ck,date:sd,endDate:ed||''});
+    }else{
+      const tid=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+      for(const ak of selKeys) await push(ref(db,'allocations'),{article:ak,client:ck,date:sd,endDate:ed||'',teamId:tid});
+    }
+    selKeys.clear();
+    document.getElementById('allocStart').value='';
+    document.getElementById('allocEnd').value='';
+    document.getElementById('allocClient').value='';
+    document.getElementById('articlePicker').innerHTML='';
+    document.getElementById('pickerHint').style.display='';
+    const sw=document.getElementById('pickerSearchWrap');if(sw)sw.style.display='none';
+    clearPickerSearch();
+    updateSelSummary();
+    alert("Allocated successfully!");
+  }catch(e){alert("Error: "+e.message);}
+  finally{btn.textContent='Allocate';btn.disabled=false;}
+});
+
+// ── View allocations table ────────────────────────────────────
+// Fetch name-resolution maps ONCE upfront, then synchronous rendering inside onValue — no more async race
+// Cached maps rebuilt whenever articles or clients change
+let cachedMaps=null;
+function rebuildMaps(){
+  if(cachedClientSnap!==null && cachedArticleSnap!==null){
+    cachedMaps=buildMaps(cachedClientSnap, cachedArticleSnap);
+    renderAllocTable();
+  }
+}
+
+function loadAllocTable(){
+  // Data is already live via initLiveListeners() — just render
+  renderAllocTable();
+}
+
+function renderAllocTable(){
+  if(!cachedMaps||!cachedAllocSnap) return;
+  const countEl=document.getElementById('allocCount');
+  const completeAllBtn=document.getElementById('completeAllAllocsBtn');
+  if(!cachedAllocSnap.exists()){
+    tbody.innerHTML='<tr><td colspan="5" class="empty">No allocations yet.</td></tr>';
+    countEl.textContent='';
+    if(completeAllBtn) completeAllBtn.style.display='none';
+    return;
+  }
+
+  const allocs=[];
+  cachedAllocSnap.forEach(c=>{
+    allocs.push({key:c.key,...c.val()});
+  });
+  countEl.textContent=`${allocs.length} record${allocs.length!==1?'s':''}`;
+  if(completeAllBtn) completeAllBtn.style.display='';
+
+  // Group by teamId (team allocations) or client+date (same client same date)
+  const groups={};
+  allocs.forEach(d=>{
+    const gk=d.teamId ? `team_${d.teamId}` : `solo_${d.key}`;
+    if(!groups[gk]) groups[gk]={client:d.client,date:d.date,endDate:d.endDate||'',articles:[],keys:[],status:d.status||'',completedAt:null};
+    else if(d.endDate) groups[gk].endDate=d.endDate; // keep freshest endDate
+    groups[gk].articles.push(d.article);
+    groups[gk].keys.push(d.key);
+    if((d.status||'').toLowerCase()==='completed') groups[gk].status='completed';
+    if(d._completedAt&&!groups[gk].completedAt) groups[gk].completedAt=d._completedAt;
+  });
+
+  // Sort groups: newest start date first; tie-break by latest Firebase key (insertion order)
+  const sortedGroups=Object.entries(groups).sort(([ka,a],[kb,b])=>{
+    const dateDiff=new Date(b.date)-new Date(a.date);
+    if(dateDiff!==0) return dateDiff;
+    // Firebase push keys are lexicographically ordered by time — higher key = newer
+    const maxKey=arr=>arr.reduce((m,k)=>k>m?k:m,'');
+    return maxKey(b.keys).localeCompare(maxKey(a.keys));
+  }).map(([,g])=>g);
+
+  let html='';
+  sortedGroups.forEach(g=>{
+    const client=cachedMaps.rc(g.client);
+    const articleNames=g.articles.map(a=>cachedMaps.ra(a)).join(', ');
+    const isCompleted=(g.status||'').toLowerCase()==='completed';
+
+    // Determine undo availability from _completedAt on any group key
+    let completedAt=g.completedAt||null;
+    if(!completedAt&&cachedAllocSnap&&cachedAllocSnap.exists()){
+      cachedAllocSnap.forEach(c=>{ if(g.keys.includes(c.key)&&c.val()._completedAt) completedAt=c.val()._completedAt; });
+    }
+    // Also check pendingCompletions
+    if(!completedAt){ for(const k of g.keys){ if(pendingCompletions[k]) { completedAt=pendingCompletions[k].completedAt; break; } } }
+
+    const canUndo=isCompleted&&isUndoAvailable(completedAt);
+
+    const statusCell=isCompleted
+      ? `<span class="status-badge status-completed">✓ Completed</span>`
+      : `<span class="status-badge status-active">● Active</span>`;
+    const completeBtn=isCompleted
+      ? (canUndo
+          ? `<button class="btn-undo undo-btn" data-keys="${g.keys.join(',')}">↩ Undo</button>`
+          : `<span style="font-size:11px;color:var(--text-dim);font-style:italic;">Completed</span>`)
+      : `<button class="btn-complete complete-btn" data-keys="${g.keys.join(',')}">Mark Complete</button>`;
+    const editData=JSON.stringify({client:g.client,date:g.date,endDate:g.endDate,keys:g.keys,articles:g.articles,status:g.status}).replace(/"/g,'&quot;');
+    html+=`<tr>
+      <td>${articleNames}</td>
+      <td>${client}</td>
+      <td><span class="date-badge">${fmtPeriod(g.date,g.endDate)}</span></td>
+      <td>${statusCell}</td>
+      <td style="text-align:right;"><div style="display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;align-items:center;">${completeBtn}<button class="btn-edit edit-alloc-btn" data-info="${editData}">Edit</button><button class="danger del-btn" data-keys="${g.keys.join(',')}">Delete</button></div></td>
+    </tr>`;
+  });
+  tbody.innerHTML=html;
+}
+
+tbody.addEventListener('click',e=>{
+  const delBtn=e.target.closest('.del-btn');
+  if(delBtn){
+    const keys=delBtn.dataset.keys.split(',');
+    if(confirm(keys.length>1?`Delete team allocation (${keys.length} members)?`:'Delete this allocation?'))
+      keys.forEach(k=>remove(ref(db,'allocations/'+k)));
+    return;
+  }
+  const completeBtn=e.target.closest('.complete-btn');
+  if(completeBtn){
+    const keys=completeBtn.dataset.keys.split(',');
+    if(confirm(keys.length>1?`Mark all ${keys.length} members as completed?`:'Mark this allocation as completed?')){
+      const completedAt=new Date().toISOString();
+      const today=new Date();
+      const todayStr=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+      const updates={};
+      keys.forEach(k=>{
+        updates['allocations/'+k+'/status']='completed';
+        updates['allocations/'+k+'/_completedAt']=completedAt;
+        updates['allocations/'+k+'/_pendingHistory']=true; // tells article site this is within undo window
+        // Save previous endDate for undo restore, then set today as endDate if not already set
+        if(cachedAllocSnap&&cachedAllocSnap.exists()){
+          cachedAllocSnap.forEach(c=>{
+            if(c.key===k){
+              const prev=c.val().endDate||'';
+              updates['allocations/'+k+'/_prevEndDate']=prev;
+              if(!prev) updates['allocations/'+k+'/endDate']=todayStr;
+            }
+          });
+        }
+        // Register in pendingCompletions to survive onValue re-fires
+        pendingCompletions[k]={completedAt};
+      });
+      update(ref(db,'/'),updates);
+    }
+    return;
+  }
+  const undoBtn=e.target.closest('.undo-btn');
+  if(undoBtn){
+    const keys=undoBtn.dataset.keys.split(',');
+    // Check undo window using the completedAt stored in pendingCompletions or Firebase cache
+    let completedAt=null;
+    if(keys[0]&&pendingCompletions[keys[0]]) completedAt=pendingCompletions[keys[0]].completedAt;
+    if(!completedAt&&cachedAllocSnap&&cachedAllocSnap.exists()){
+      cachedAllocSnap.forEach(c=>{ if(c.key===keys[0]&&c.val()._completedAt) completedAt=c.val()._completedAt; });
+    }
+    if(!isUndoAvailable(completedAt)){
+      alert('Undo window has expired (2 days). This record has moved to history.');
+      return;
+    }
+    if(confirm(keys.length>1?`Undo completion for all ${keys.length} members?`:'Undo completion for this allocation?')){
+      // Delete pendingCompletions BEFORE the write so the onValue re-seed guard works
+      keys.forEach(k=>delete pendingCompletions[k]);
+      // ONE atomic multi-path update at root — Firebase fires onValue only ONCE,
+      // preventing intermediate states from triggering expiry or re-seeding _completedAt.
+      // null values in a root-ref update() delete those paths atomically.
+      const atomicUpdate={};
+      keys.forEach(k=>{
+        let rec=null;
+        if(cachedAllocSnap&&cachedAllocSnap.exists()){
+          cachedAllocSnap.forEach(c=>{ if(c.key===k) rec=c.val(); });
+        }
+        atomicUpdate['allocations/'+k+'/status']=null; // delete — active records have no status field
+        atomicUpdate['allocations/'+k+'/_completedAt']=null;    // delete
+        atomicUpdate['allocations/'+k+'/_pendingHistory']=null; // delete — prevents other site migrating this to history/
+        if(rec&&Object.prototype.hasOwnProperty.call(rec,'_prevEndDate')){
+          const prev=rec._prevEndDate;
+          // null deletes endDate (correct for originally-ongoing allocs)
+          atomicUpdate['allocations/'+k+'/endDate']=(prev&&prev!=='')?prev:null;
+          atomicUpdate['allocations/'+k+'/_prevEndDate']=null; // delete
+        }
+        // If no _prevEndDate (completed from other site), endDate is left untouched
+      });
+      update(ref(db,'/'),atomicUpdate).catch(e=>alert('Undo error: '+e.message));
+    }
+    return;
+  }
+  const editBtn=e.target.closest('.edit-alloc-btn');
+  if(editBtn){
+    const info=JSON.parse(editBtn.dataset.info.replace(/&quot;/g,'"'));
+    openAllocEdit(info);
+  }
+});
+
+// ── Mark All Allocations as Completed ────────────────────────
+document.getElementById('completeAllAllocsBtn').addEventListener('click',async()=>{
+  if(!confirm('Mark ALL allocations as completed?')) return;
+  const snap=await get(ref(db,'allocations'));
+  if(!snap.exists()) return alert('No allocations to mark.');
+  const today=new Date();
+  const todayStr=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  const updates={};
+  const completedAt=new Date().toISOString();
+  snap.forEach(c=>{
+    const v=c.val();
+    if((v.status||'').toLowerCase()!=='completed'){
+      updates['allocations/'+c.key+'/status']='completed';
+      updates['allocations/'+c.key+'/_completedAt']=completedAt;
+      updates['allocations/'+c.key+'/_pendingHistory']=true; // tells article site this is within undo window
+      const prev=v.endDate||'';
+      updates['allocations/'+c.key+'/_prevEndDate']=prev;
+      if(!prev) updates['allocations/'+c.key+'/endDate']=todayStr;
+    }
+  });
+  if(!Object.keys(updates).length) return alert('All allocations are already completed.');
+  // Register in pendingCompletions so undo is available
+  snap.forEach(c=>{ if((c.val().status||'').toLowerCase()!=='completed') pendingCompletions[c.key]={completedAt}; });
+  await update(ref(db,'/'), updates);
+});
+
+// ── Edit Allocation Modal ─────────────────────────────────────
+const allocEditModal=document.createElement('div');
+allocEditModal.className='modal-bg';
+allocEditModal.id='allocEditModal';
+allocEditModal.innerHTML=`
+  <div class="modal-box" style="max-width:500px;max-height:90vh;overflow-y:auto;">
+    <h3>Edit Allocation</h3>
+    <div id="allocEditBody"></div>
+    <div class="modal-acts">
+      <button class="btn-cancel" id="allocEditCancelBtn" style="padding:10px 20px;border-radius:10px;border:none;font-size:14px;cursor:pointer;">Cancel</button>
+      <button id="allocEditSaveBtn" style="padding:10px 20px;border-radius:10px;font-size:14px;font-weight:500;">Save Changes</button>
+    </div>
+  </div>`;
+document.body.appendChild(allocEditModal);
+document.getElementById('allocEditCancelBtn').addEventListener('click',()=>allocEditModal.classList.remove('open'));
+allocEditModal.addEventListener('click',e=>{if(e.target===allocEditModal)allocEditModal.classList.remove('open');});
+
+let allocEditState={};
+
+function openAllocEdit(info){
+  allocEditState=info;
+
+  // Build client options
+  let clientOpts='<option value="">Select Client</option>';
+  if(cachedClientSnap&&cachedClientSnap.exists()){
+    cachedClientSnap.forEach(c=>{
+      const d=c.val(),lbl=d.location?`${d.name} · ${d.location}`:d.name;
+      clientOpts+=`<option value="${c.key}"${c.key===info.client?' selected':''}>${lbl}</option>`;
+    });
+  }
+
+  // Build article checklist — all articles, mark currently selected ones
+  const currentArticleKeys=new Set(info.articles||[]);
+  const isGroupCompleted=(info.status||'').toLowerCase()==='completed';
+  const currentKeys=new Set(info.keys||[]); // Firebase keys of THIS allocation group
+
+  // Compute busy article keys for the current allocation's date range,
+  // excluding completed allocations AND the allocation being edited
+  const editBusyKeys=new Set();
+  const editStartMs=info.date ? new Date(info.date).getTime() : null;
+  const editEndMs=info.endDate ? new Date(info.endDate).getTime() : (editStartMs ? Infinity : null);
+  if(cachedAllocSnap&&cachedAllocSnap.exists()&&editStartMs){
+    // First pass: collect all completed group keys
+    const completedGroups=new Set();
+    cachedAllocSnap.forEach(c=>{
+      const a=c.val();
+      if((a.status||'').toLowerCase()==='completed'){
+        const gk=a.teamId ? `team_${a.teamId}` : `solo_${c.key}`;
+        completedGroups.add(gk);
+      }
+    });
+    // Second pass: skip this group's records & completed groups
+    cachedAllocSnap.forEach(c=>{
+      if(currentKeys.has(c.key)) return;
+      const a=c.val();
+      const gk=a.teamId ? `team_${a.teamId}` : `solo_${c.key}`;
+      if(completedGroups.has(gk)) return;
+      const aStart=new Date(a.date).getTime();
+      const aEnd=getAllocEndMs(a.endDate||'');
+      if(aStart<=editEndMs && aEnd>=editStartMs){
+        if(cachedArticleSnap&&cachedArticleSnap.exists()){
+          cachedArticleSnap.forEach(ac=>{
+            if(ac.key===a.article||ac.val().name===a.article) editBusyKeys.add(ac.key);
+          });
+        }
+      }
+    });
+  }
+
+  let articleRows='';
+  if(cachedArticleSnap&&cachedArticleSnap.exists()){
+    cachedArticleSnap.forEach(c=>{
+      const d=c.val(); if(!d||!d.name) return;
+      const isSelected=currentArticleKeys.has(c.key);
+      const sub=[d.location,d.course].filter(Boolean).join(' · ');
+      const isBusyElsewhere=editBusyKeys.has(c.key)&&!isSelected;
+      const statusBadge=isGroupCompleted&&isSelected
+        ? `<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(16,185,129,.15);color:#34d399;white-space:nowrap;">✓ Completed</span>`
+        : isSelected
+          ? `<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(99,102,241,.12);color:#a5b4fc;white-space:nowrap;">● Active</span>`
+          : isBusyElsewhere
+            ? `<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(239,68,68,.12);color:#f87171;white-space:nowrap;">● Busy</span>`
+            : `<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(16,185,129,.12);color:#34d399;white-space:nowrap;">● Available</span>`;
+      const rowBg=isSelected?'var(--primary-soft)':isBusyElsewhere?'rgba(239,68,68,.04)':'var(--surface2)';
+      articleRows+=`<label style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:7px;border:1px solid ${isBusyElsewhere&&!isSelected?'rgba(239,68,68,.18)':'var(--border)'};background:${rowBg};margin-bottom:6px;cursor:pointer;transition:background .14s;">
+        <input type="checkbox" data-akey="${c.key}" ${isSelected?'checked':''} style="width:15px;height:15px;accent-color:var(--primary);flex-shrink:0;">
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:13px;font-weight:500;">${d.name}</div>
+          ${sub?`<div style="font-size:11px;color:var(--text-dim);margin-top:1px;">${sub}</div>`:''}
+        </div>
+        ${statusBadge}
+      </label>`;
+    });
+  }
+
+  document.getElementById('allocEditBody').innerHTML=`
+    <div class="input-group"><label class="lbl">Client *</label>
+      <select id="allocEditClient">${clientOpts}</select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="input-group" style="margin:0 0 14px;"><label class="lbl">Start Date *</label>
+        <input type="date" id="allocEditStart" value="${info.date||''}">
+      </div>
+      <div class="input-group" style="margin:0 0 14px;"><label class="lbl">End Date (optional)</label>
+        <input type="date" id="allocEditEnd" value="${info.endDate||''}">
+      </div>
+    </div>
+    <div style="margin-bottom:6px;">
+      <div style="font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Articles</div>
+      <div style="position:relative;margin-bottom:8px;"><svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;" width="13" height="13" fill="none" stroke="var(--text-dim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="editArticleSearch" type="text" placeholder="Search articles\u2026" style="padding:9px 13px 9px 32px;font-size:13px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);width:100%;outline:none;transition:border-color .18s,box-shadow .18s;" oninput="filterEditArticles(this.value)"><button id="editArticleSearchClear" onclick="clearEditArticleSearch()" style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-dim);font-size:16px;cursor:pointer;padding:2px 4px;line-height:1;width:auto;">&#x2715;</button></div>
+      <div id="allocEditArticles">${articleRows||'<div style="color:var(--text-dim);font-size:13px;">No articles found.</div>'}</div>
+      <div id="editArticleNoResults" style="display:none;text-align:center;padding:14px;color:var(--text-dim);font-size:13px;">No articles match your search.</div>
+    </div>`;
+
+  // Live checkbox highlight
+  document.getElementById('allocEditArticles').querySelectorAll('input[type=checkbox]').forEach(cb=>{
+    cb.addEventListener('change',()=>{
+      cb.closest('label').style.background=cb.checked?'var(--primary-soft)':'var(--surface2)';
+    });
+  });
+
+  // Re-render article availability when dates change in edit modal
+  function refreshEditArticleAvailability(){
+    const newStart=document.getElementById('allocEditStart').value;
+    const newEnd=document.getElementById('allocEditEnd').value;
+    // Get currently checked article keys from UI
+    const checkedNow=new Set();
+    document.getElementById('allocEditArticles').querySelectorAll('input[type=checkbox]:checked').forEach(cb=>checkedNow.add(cb.dataset.akey));
+    // Recompute busy keys with updated dates
+    const newStartMs=newStart?new Date(newStart).getTime():null;
+    const newEndMs=newEnd?new Date(newEnd).getTime():(newStartMs||null);
+    const newBusyKeys=new Set();
+    if(cachedAllocSnap&&cachedAllocSnap.exists()&&newStartMs){
+      const completedGroups=new Set();
+      cachedAllocSnap.forEach(c=>{
+        const a=c.val();
+        if((a.status||'').toLowerCase()==='completed'){
+          const gk=a.teamId ? `team_${a.teamId}` : `solo_${c.key}`;
+          completedGroups.add(gk);
+        }
+      });
+      cachedAllocSnap.forEach(c=>{
+        if(currentKeys.has(c.key)) return;
+        const a=c.val();
+        const gk=a.teamId ? `team_${a.teamId}` : `solo_${c.key}`;
+        if(completedGroups.has(gk)) return;
+        const aStart=new Date(a.date).getTime();
+        const aEnd=getAllocEndMs(a.endDate||'');
+        if(aStart<=newEndMs && aEnd>=newStartMs){
+          if(cachedArticleSnap&&cachedArticleSnap.exists()){
+            cachedArticleSnap.forEach(ac=>{
+              if(ac.key===a.article||ac.val().name===a.article) newBusyKeys.add(ac.key);
+            });
+          }
+        }
+      });
+    }
+    // Re-render article rows with updated busy/available status
+    let rows='';
+    if(cachedArticleSnap&&cachedArticleSnap.exists()){
+      cachedArticleSnap.forEach(c=>{
+        const d=c.val(); if(!d||!d.name) return;
+        const isSelected=checkedNow.has(c.key);
+        const sub=[d.location,d.course].filter(Boolean).join(' · ');
+        const isBusyElsewhere=newBusyKeys.has(c.key)&&!isSelected;
+        const badge=isGroupCompleted&&isSelected
+          ? `<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(16,185,129,.15);color:#34d399;white-space:nowrap;">✓ Completed</span>`
+          : isSelected
+            ? `<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(99,102,241,.12);color:#a5b4fc;white-space:nowrap;">● Active</span>`
+            : isBusyElsewhere
+              ? `<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(239,68,68,.12);color:#f87171;white-space:nowrap;">● Busy</span>`
+              : `<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(16,185,129,.12);color:#34d399;white-space:nowrap;">● Available</span>`;
+        const rowBg=isSelected?'var(--primary-soft)':isBusyElsewhere?'rgba(239,68,68,.04)':'var(--surface2)';
+        rows+=`<label style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:7px;border:1px solid ${isBusyElsewhere&&!isSelected?'rgba(239,68,68,.18)':'var(--border)'};background:${rowBg};margin-bottom:6px;cursor:pointer;transition:background .14s;">
+          <input type="checkbox" data-akey="${c.key}" ${isSelected?'checked':''} style="width:15px;height:15px;accent-color:var(--primary);flex-shrink:0;">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:500;">${d.name}</div>
+            ${sub?`<div style="font-size:11px;color:var(--text-dim);margin-top:1px;">${sub}</div>`:''}
+          </div>
+          ${badge}
+        </label>`;
+      });
+    }
+    document.getElementById('allocEditArticles').innerHTML=rows||'<div style="color:var(--text-dim);font-size:13px;">No articles found.</div>';
+    // Re-attach checkbox listeners
+    document.getElementById('allocEditArticles').querySelectorAll('input[type=checkbox]').forEach(cb=>{
+      cb.addEventListener('change',()=>{
+        cb.closest('label').style.background=cb.checked?'var(--primary-soft)':'var(--surface2)';
+        refreshEditArticleAvailability();
+      });
+    });
+    // Re-apply search filter if active
+    const activeQ=(document.getElementById('editArticleSearch')||{}).value||'';
+    if(activeQ) filterEditArticles(activeQ);
+  }
+  document.getElementById('allocEditStart').addEventListener('change', refreshEditArticleAvailability);
+  document.getElementById('allocEditEnd').addEventListener('change', refreshEditArticleAvailability);
+
+  // Reset edit article search
+  const eas=document.getElementById('editArticleSearch');if(eas)eas.value='';
+  const eacb=document.getElementById('editArticleSearchClear');if(eacb)eacb.style.display='none';
+  const eanr=document.getElementById('editArticleNoResults');if(eanr)eanr.style.display='none';
+  allocEditModal.classList.add('open');
+}
+
+document.getElementById('allocEditSaveBtn').addEventListener('click',async()=>{
+  const client=document.getElementById('allocEditClient').value;
+  const date=document.getElementById('allocEditStart').value;
+  const endDate=document.getElementById('allocEditEnd').value;
+  if(!client) return alert('Select a client');
+  if(!date) return alert('Pick a start date');
+
+  // Determine newly checked article keys
+  const checkedKeys=new Set();
+  document.getElementById('allocEditArticles').querySelectorAll('input[type=checkbox]:checked').forEach(cb=>checkedKeys.add(cb.dataset.akey));
+  if(!checkedKeys.size) return alert('Select at least one article');
+
+  const prevKeys=new Set(allocEditState.keys); // Firebase record keys (allocation IDs)
+  const prevArticles=new Set(allocEditState.articles||[]); // article keys that were selected
+
+  // Build key→article map from existing records
+  const keyToArticle={};
+  if(cachedAllocSnap&&cachedAllocSnap.exists()){
+    cachedAllocSnap.forEach(c=>{
+      if(prevKeys.has(c.key)) keyToArticle[c.key]=c.val().article;
+    });
+  }
+
+  const updates={};
+  // Update existing records whose article is still checked
+  for(const [rk,ak] of Object.entries(keyToArticle)){
+    if(checkedKeys.has(ak)){
+      updates['allocations/'+rk+'/client']=client;
+      updates['allocations/'+rk+'/date']=date;
+      updates['allocations/'+rk+'/endDate']=endDate||'';
+    }
+  }
+  if(Object.keys(updates).length) await update(ref(db,'/'),updates);
+
+  // Remove records for articles that were unchecked
+  const removals=[];
+  for(const [rk,ak] of Object.entries(keyToArticle)){
+    if(!checkedKeys.has(ak)) removals.push(remove(ref(db,'allocations/'+rk)));
+  }
+  if(removals.length) await Promise.all(removals);
+
+  // Add new records for articles that weren't in the original group
+  const newArticles=[...checkedKeys].filter(ak=>!prevArticles.has(ak));
+  const teamId=allocEditState.keys.length>1||newArticles.length>0
+    ? (allocEditState.keys.length>1 ? (cachedAllocSnap&&cachedAllocSnap.exists()&&cachedAllocSnap.forEach(c=>{if(prevKeys.has(c.key)&&c.val().teamId)allocEditState._tid=c.val().teamId;}),allocEditState._tid||Date.now().toString(36))
+      : Date.now().toString(36)+Math.random().toString(36).slice(2,5))
+    : null;
+  for(const ak of newArticles){
+    await push(ref(db,'allocations'),{article:ak,client,date,endDate:endDate||'',teamId:teamId||''});
+  }
+
+  allocEditModal.classList.remove('open');
+});
+
+// Periodically move expired completed allocations → history/ (every 10 min)
+setInterval(()=>expireCompletedAllocations(), 10*60*1000);
+
+// ── Article user view ─────────────────────────────────────────
+function loadMyAllocs(name){
+  Promise.all([get(ref(db,'clients')),get(ref(db,'articles'))]).then(([cs,as])=>{
+    const maps=buildMaps(cs,as);
+    let myKey=null;
+    if(as.exists())as.forEach(c=>{if((c.val().name||'').toLowerCase().trim()===(name||'').toLowerCase().trim())myKey=c.key;});
+    onValue(ref(db,'allocations'),snap=>{
+      const all=[];
+      if(snap.exists())snap.forEach(c=>all.push(c.val()));
+      const mine=all.filter(d=>d.article===myKey);
+      mine.sort((a,b)=>new Date(b.date)-new Date(a.date));
+      const seen=new Set(); let html='';
+      mine.forEach(d=>{
+        const gk=d.teamId?d.teamId:`${d.client}__${d.date}__${d.endDate||''}`;
+        if(seen.has(gk))return;seen.add(gk);
+        html+=`<div class="alloc-card"><div><strong>${maps.rc(d.client)}</strong></div><div class="date-badge">${fmtPeriod(d.date,d.endDate)}</div></div>`;
+      });
+      myDataDiv.innerHTML=html||'<div class="empty">No allocations found.</div>';
+    });
+  });
+}
+</script>
+</body>
+</html>
