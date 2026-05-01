@@ -667,9 +667,8 @@ document.getElementById('editSaveBtn').addEventListener('click',async()=>{
   editModal.classList.remove('open');
 });
 
-window.openEdit=function(type,key,dj){
+window.openEdit=function(type,key,d){
   editState={type,key};
-  const d=JSON.parse(dj.replace(/&quot;/g,'"'));
   document.getElementById('editTitle').textContent=type==='client'?'Edit Client':'Edit Article';
   if(type==='client'){
     document.getElementById('editBody').innerHTML=`<div class="input-group"><label class="lbl">Name *</label><input id="editName" value="${d.name||''}"></div><div class="input-group"><label class="lbl">Location *</label><input id="editLoc" value="${d.location||''}"></div>`;
@@ -691,13 +690,22 @@ function loadClientList(){
   onValue(ref(db,'clients'),snap=>{
     const el=document.getElementById('clientListDiv');
     if(!snap.exists()){el.innerHTML='<div class="empty">No clients added yet.</div>';return;}
-    let html='';
+    el.innerHTML='';
     snap.forEach(c=>{
-      const d=c.val(), dj=JSON.stringify({name:d.name,location:d.location||''}).replace(/"/g,'&quot;');
-      html+=`<div class="irow"><div class="irow-info"><span class="irow-name">${d.name} <span class="pill pill-g">${d.location||''}</span></span></div>
-      <div class="irow-actions"><button class="btn-edit" onclick='openEdit("client","${c.key}","${dj}")'>Edit</button><button class="danger" onclick='deleteItem("clients","${c.key}")'>Delete</button></div></div>`;
+      const d=c.val();
+      const row=document.createElement('div');
+      row.className='irow';
+      row.innerHTML=`<div class="irow-info"><span class="irow-name">${d.name} <span class="pill pill-g">${d.location||''}</span></span></div>
+      <div class="irow-actions">
+        <button class="btn-edit">Edit</button>
+        <button class="danger">Delete</button>
+      </div>`;
+      const editBtn=row.querySelector('.btn-edit');
+      const delBtn=row.querySelector('.danger');
+      editBtn.addEventListener('click',()=>openEdit('client',c.key,{name:d.name,location:d.location||''}));
+      delBtn.addEventListener('click',()=>deleteItem('clients',c.key));
+      el.appendChild(row);
     });
-    el.innerHTML=html;
   });
 }
 
@@ -706,14 +714,23 @@ function loadArticleList(){
   onValue(ref(db,'articles'),snap=>{
     const el=document.getElementById('articleListDiv');
     if(!snap.exists()){el.innerHTML='<div class="empty">No articles added yet.</div>';return;}
-    let html='';
+    el.innerHTML='';
     snap.forEach(c=>{
-      const d=c.val(), dj=JSON.stringify({name:d.name,location:d.location||'',course:d.course||''}).replace(/"/g,'&quot;');
-      html+=`<div class="irow"><div class="irow-info"><span class="irow-name">${d.name}</span>
+      const d=c.val();
+      const row=document.createElement('div');
+      row.className='irow';
+      row.innerHTML=`<div class="irow-info"><span class="irow-name">${d.name}</span>
       <span class="irow-sub">${d.location?`<span class="pill pill-g">${d.location}</span>`:''}${d.course?`<span class="pill pill-p">${d.course}</span>`:''}</span></div>
-      <div class="irow-actions"><button class="btn-edit" onclick='openEdit("article","${c.key}","${dj}")'>Edit</button><button class="danger" onclick='deleteItem("articles","${c.key}")'>Delete</button></div></div>`;
+      <div class="irow-actions">
+        <button class="btn-edit">Edit</button>
+        <button class="danger">Delete</button>
+      </div>`;
+      const editBtn=row.querySelector('.btn-edit');
+      const delBtn=row.querySelector('.danger');
+      editBtn.addEventListener('click',()=>openEdit('article',c.key,{name:d.name,location:d.location||'',course:d.course||''}));
+      delBtn.addEventListener('click',()=>deleteItem('articles',c.key));
+      el.appendChild(row);
     });
-    el.innerHTML=html;
   });
 }
 
