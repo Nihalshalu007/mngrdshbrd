@@ -260,7 +260,7 @@
     </div>
     <div class="input-group"><label class="lbl">Email</label><input id="emailEl" type="email" placeholder="manager@example.com"></div>
     <div class="input-group"><label class="lbl">Password</label><input id="passEl" type="password" placeholder="Enter password"></div>
-    <button id="loginBtn" style="width:100%;margin-top:4px;">Sign In as Manager</button>
+    <button id="loginBtn" style="width:100%;margin-top:4px;">Sign In</button>
     <div class="toggle-text"><span id="toggleTextSpan">Don't have an account?</span> <a id="toggleAuthBtn">Register here</a></div>
   </div>
   <div id="artTabContent" class="login-body" style="display:none;">
@@ -793,7 +793,7 @@ onAuthStateChanged(auth,async user=>{
     });
     currentRole=dr;currentUserName=dn;
   }
-  userRoleEl.textContent=`Logged in as ${currentUserName} (${currentRole.toUpperCase()})`;
+  userRoleEl.textContent=`Logged in as ${currentUserName}`;
   loginDiv.classList.add('hidden');appDiv.classList.remove('hidden');
   if(currentRole==='manager'){
     managerDiv.classList.remove('hidden');articlePanel.classList.add('hidden');
