@@ -193,6 +193,7 @@
   .ws-rfpr{background:rgba(168,85,247,.12);color:#c084fc;border-color:rgba(168,85,247,.25);}
   .ws-ifs{background:rgba(59,130,246,.12);color:#60a5fa;border-color:rgba(59,130,246,.25);}
   .ws-completed{background:rgba(16,185,129,.15);color:#34d399;border-color:rgba(16,185,129,.25);}
+  .ws-extra{background:rgba(236,72,153,.12);color:#f472b6;border-color:rgba(236,72,153,.25);}
   /* ── Post-end-date update chip ── */
   .overdue-chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px 3px 7px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);cursor:pointer;transition:background .15s;white-space:nowrap;flex-shrink:0;}
   .overdue-chip:hover{background:rgba(239,68,68,.2);}
@@ -219,6 +220,56 @@
   .asp-client{color:var(--text-muted);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .asp-period{color:var(--text-dim);font-size:10px;white-space:nowrap;margin-left:6px;}
   .asp-free-msg{font-size:12px;color:#34d399;display:flex;align-items:center;gap:5px;}
+  .asp-section-label{font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin:10px 0 6px;display:flex;align-items:center;gap:5px;}
+  .asp-section-label span.dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0;}
+  .asp-collision-warn{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:7px;padding:9px 12px;margin-bottom:8px;font-size:12px;color:#f87171;display:flex;align-items:flex-start;gap:7px;animation:fadeIn .18s ease-out;}
+  .asp-collision-warn svg{flex-shrink:0;margin-top:1px;}
+
+  /* ── Admin Panel ── */
+  .btn-admin-topbar{background:rgba(99,102,241,.12);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);font-size:13px;padding:8px 14px;gap:6px;}
+  .btn-admin-topbar:hover{background:rgba(99,102,241,.22);transform:none;}
+  .btn-admin-topbar.active{background:rgba(99,102,241,.25);border-color:rgba(99,102,241,.6);}
+  .btn-admin-topbar .chevron{transition:transform .2s;}
+  .btn-admin-topbar.active .chevron{transform:rotate(180deg);}
+  .admin-panel{width:100%;max-width:960px;margin-bottom:12px;animation:fadeIn .2s ease-out;position:relative;display:none;}
+  .admin-panel.visible{display:block;}
+  .admin-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(15,23,42,.97);border:1px solid rgba(99,102,241,.28);border-radius:var(--radius);backdrop-filter:blur(8px);}
+  .admin-badge{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;padding:3px 10px;border-radius:20px;flex-shrink:0;margin-right:4px;}
+  .admin-divider{width:1px;height:22px;background:rgba(255,255,255,.1);margin:0 4px;flex-shrink:0;}
+  /* Icon button with tooltip */
+  .admin-icon-btn{position:relative;width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--text-muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s,color .15s;padding:0;flex-shrink:0;}
+  .admin-icon-btn:hover{background:rgba(99,102,241,.15);border-color:rgba(99,102,241,.35);color:#a5b4fc;transform:none;}
+  .admin-icon-btn.active{background:rgba(99,102,241,.2);border-color:rgba(99,102,241,.5);color:#a5b4fc;}
+  /* Tooltip */
+  .admin-icon-btn .tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1e293b;border:1px solid rgba(99,102,241,.25);color:var(--text);font-size:11px;font-weight:500;white-space:nowrap;padding:5px 10px;border-radius:6px;pointer-events:none;opacity:0;transition:opacity .15s;z-index:200;box-shadow:0 4px 16px rgba(0,0,0,.4);}
+  .admin-icon-btn .tip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1e293b;}
+  .admin-icon-btn:hover .tip{opacity:1;}
+  /* Popover */
+  .admin-popover{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid rgba(99,102,241,.25);border-radius:var(--radius);padding:18px;z-index:150;box-shadow:0 16px 48px rgba(0,0,0,.5);animation:fadeIn .18s ease-out;display:none;}
+  .admin-popover.open{display:block;}
+  .admin-popover-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .admin-popover-title{font-size:13px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;}
+  .admin-popover-close{background:rgba(255,255,255,.07);border:1px solid var(--border);color:var(--text-muted);border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;width:auto;transform:none;}
+  .admin-popover-close:hover{background:rgba(255,255,255,.12);transform:none;}
+  /* Upload area */
+  .upload-zone{border:2px dashed rgba(99,102,241,.3);border-radius:var(--radius-sm);padding:20px 16px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative;}
+  .upload-zone:hover,.upload-zone.drag{border-color:var(--primary);background:rgba(99,102,241,.06);}
+  .upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+  .upload-zone-text{font-size:13px;color:var(--text-muted);margin-bottom:3px;}
+  .upload-zone-hint{font-size:11px;color:var(--text-dim);}
+  .upload-preview{margin-top:10px;max-height:150px;overflow-y:auto;border-radius:6px;border:1px solid var(--border);background:var(--surface2);}
+  .upload-preview table{font-size:11px;}
+  .upload-preview th{font-size:10px;padding:7px 10px;}
+  .upload-preview td{padding:6px 10px;}
+  .upload-actions{display:flex;align-items:center;gap:8px;margin-top:10px;}
+  .upload-count{font-size:12px;color:var(--text-muted);flex:1;}
+  /* Designation list */
+  .desig-list{display:flex;flex-direction:column;gap:5px;max-height:180px;overflow-y:auto;margin-bottom:10px;}
+  .desig-row{display:flex;align-items:center;justify-content:space-between;padding:7px 11px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-size:13px;font-weight:500;}
+  .desig-add-row{display:flex;gap:8px;}
+  .desig-add-row input{flex:1;padding:8px 12px;font-size:13px;}
+  .btn-sm{padding:7px 14px;font-size:12px;border-radius:6px;width:auto;transform:none;}
+  .btn-sm:hover{transform:none;}
 
   /* Legacy compatibility */
   .glass{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;width:100%;max-width:420px;}
@@ -260,7 +311,7 @@
     </div>
     <div class="input-group"><label class="lbl">Email</label><input id="emailEl" type="email" placeholder="manager@example.com"></div>
     <div class="input-group"><label class="lbl">Password</label><input id="passEl" type="password" placeholder="Enter password"></div>
-    <button id="loginBtn" style="width:100%;margin-top:4px;">Sign In</button>
+    <button id="loginBtn" style="width:100%;margin-top:4px;">Sign In as Manager</button>
     <div class="toggle-text"><span id="toggleTextSpan">Don't have an account?</span> <a id="toggleAuthBtn">Register here</a></div>
   </div>
   <div id="artTabContent" class="login-body" style="display:none;">
@@ -293,15 +344,202 @@ function switchTab(t){
 
 <!-- ═══ DASHBOARD ═══ -->
 <div id="appDiv" class="app-shell hidden">
+
   <div class="app-topbar">
     <div>
       <h2>Articleship Dashboard <span style="font-size:12px;font-weight:700;color:#a5b4fc;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.25);padding:2px 9px;border-radius:20px;vertical-align:middle;letter-spacing:.04em;">v3.0</span></h2>
       <p id="userRoleEl"></p>
     </div>
-    <div style="display:flex;align-items:center;gap:12px;">
+    <div style="display:flex;align-items:center;gap:10px;">
       <span style="font-size:11px;color:var(--text-muted);">Developed by <span style="background:linear-gradient(90deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;">Nihal Shalu</span></span>
+      <button id="adminToggleBtn" class="btn-admin-topbar" onclick="toggleAdminPanel()" style="display:none;">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        ⚙ Admin
+        <span class="chevron"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+      </button>
       <button id="logoutBtn" class="btn-logout">Sign Out</button>
     </div>
+  </div>
+
+<!-- ═══ ADMIN PANEL (drops below topbar) ═══ -->
+  <div id="adminPanel" class="admin-panel">
+    <!-- Icon toolbar bar -->
+    <div class="admin-bar">
+      <span class="admin-badge">⚙ Admin</span>
+      <div class="admin-divider"></div>
+
+      <!-- Bulk Client Upload icon -->
+      <button class="admin-icon-btn" id="adminBtn-upload" onclick="toggleAdminPopover('upload')" aria-label="Bulk Client Upload">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span class="tip">Bulk Import Clients (Excel / CSV)</span>
+      </button>
+
+      <!-- Manage Designations icon -->
+      <button class="admin-icon-btn" id="adminBtn-desig" onclick="toggleAdminPopover('desig')" aria-label="Manage Designations">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+        <span class="tip">Manage Designation Categories</span>
+      </button>
+
+      <!-- Manage Courses icon -->
+      <button class="admin-icon-btn" id="adminBtn-courses" onclick="toggleAdminPopover('courses')" aria-label="Manage Courses">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <span class="tip">Manage Courses</span>
+      </button>
+
+      <!-- Manage Work Statuses icon -->
+      <button class="admin-icon-btn" id="adminBtn-statuses" onclick="toggleAdminPopover('statuses')" aria-label="Manage Work Statuses">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span class="tip">Manage Work Statuses</span>
+      </button>
+
+      <!-- App Settings icon -->
+      <button class="admin-icon-btn" id="adminBtn-settings" onclick="toggleAdminPopover('settings')" aria-label="Settings">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span class="tip">App Settings &amp; Info</span>
+      </button>
+
+    </div>
+
+    <!-- Popovers (one per feature, shown below the bar) -->
+
+    <!-- Upload Popover -->
+    <div class="admin-popover" id="adminPop-upload">
+      <div class="admin-popover-header">
+        <span class="admin-popover-title">
+          <svg width="15" height="15" fill="none" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Bulk Import Clients
+        </span>
+        <button class="admin-popover-close" onclick="closeAdminPopover('upload')">✕ Close</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 260px;gap:16px;align-items:start;">
+        <div>
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" id="bulkClientFile" accept=".xlsx,.xls,.csv" onchange="handleBulkFile(this)">
+            <svg style="margin-bottom:8px;opacity:.5;" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <div class="upload-zone-text">Drop Excel / CSV here or <span style="color:#a5b4fc;font-weight:600;">browse</span></div>
+            <div class="upload-zone-hint">Supports .xlsx · .xls · .csv</div>
+          </div>
+          <div id="uploadPreviewWrap" style="display:none;">
+            <div class="upload-preview" id="uploadPreviewTable"></div>
+            <div class="upload-actions">
+              <span class="upload-count" id="uploadCountLabel"></span>
+              <button class="btn-sm danger" onclick="clearBulkUpload()">✕ Clear</button>
+              <button class="btn-sm" id="bulkImportBtn" onclick="importBulkClients()">⬆ Import</button>
+            </div>
+          </div>
+          <div id="uploadStatusMsg" style="font-size:12px;margin-top:8px;color:#34d399;display:none;"></div>
+        </div>
+        <div style="background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.15);border-radius:8px;padding:14px;">
+          <div style="font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Expected Format</div>
+          <div style="font-size:11px;color:var(--text-muted);line-height:1.8;">
+            Row 1 (header):<br>
+            <code style="background:rgba(255,255,255,.07);padding:1px 6px;border-radius:3px;">Name</code> &nbsp;
+            <code style="background:rgba(255,255,255,.07);padding:1px 6px;border-radius:3px;">Location</code>
+            <br><br>
+            Row 2+: One client per row.<br>
+            <span style="color:var(--text-dim);">Duplicates by name are skipped automatically.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Designations Popover -->
+    <div class="admin-popover" id="adminPop-desig">
+      <div class="admin-popover-header">
+        <span class="admin-popover-title">
+          <svg width="15" height="15" fill="none" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          Manage Designations
+        </span>
+        <button class="admin-popover-close" onclick="closeAdminPopover('desig')">✕ Close</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 220px;gap:16px;">
+        <div>
+          <div class="desig-list" id="desigList"></div>
+          <div class="desig-add-row">
+            <input type="text" id="newDesigInput" placeholder="New designation name…" onkeydown="if(event.key==='Enter')addDesignation()">
+            <button class="btn-sm" onclick="addDesignation()">+ Add</button>
+          </div>
+        </div>
+        <div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15);border-radius:8px;padding:14px;align-self:start;">
+          <div style="font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">How it works</div>
+          <div style="font-size:11px;color:var(--text-muted);line-height:1.7;">Designations appear in the <strong>Add / Edit Article</strong> dropdown. Changes apply instantly. Removing a designation does not affect existing articles.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Courses Popover -->
+    <div class="admin-popover" id="adminPop-courses">
+      <div class="admin-popover-header">
+        <span class="admin-popover-title">
+          <svg width="15" height="15" fill="none" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Manage Courses
+        </span>
+        <button class="admin-popover-close" onclick="closeAdminPopover('courses')">✕ Close</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 220px;gap:16px;">
+        <div>
+          <div class="desig-list" id="courseList"></div>
+          <div class="desig-add-row">
+            <input type="text" id="newCourseInput" placeholder="New course name…" onkeydown="if(event.key==='Enter')addCourse()">
+            <button class="btn-sm" onclick="addCourse()">+ Add</button>
+          </div>
+        </div>
+        <div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15);border-radius:8px;padding:14px;align-self:start;">
+          <div style="font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">How it works</div>
+          <div style="font-size:11px;color:var(--text-muted);line-height:1.7;">Courses appear in the <strong>Add / Edit Article</strong> dropdown. Saved in Firebase and sync across all devices. Removing a course does not affect existing articles.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Work Statuses Popover -->
+    <div class="admin-popover" id="adminPop-statuses">
+      <div class="admin-popover-header">
+        <span class="admin-popover-title">
+          <svg width="15" height="15" fill="none" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Manage Work Statuses
+        </span>
+        <button class="admin-popover-close" onclick="closeAdminPopover('statuses')">✕ Close</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 220px;gap:16px;">
+        <div>
+          <div class="desig-list" id="statusList"></div>
+          <div class="desig-add-row">
+            <input type="text" id="newStatusInput" placeholder="New status name…" onkeydown="if(event.key==='Enter')addWorkStatus()">
+            <button class="btn-sm" onclick="addWorkStatus()">+ Add</button>
+          </div>
+        </div>
+        <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:8px;padding:14px;align-self:start;">
+          <div style="font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">How it works</div>
+          <div style="font-size:11px;color:var(--text-muted);line-height:1.7;">Work statuses appear in allocation dropdowns and filters. Saved in Firebase and sync across all devices. Removing a status does not affect existing allocations.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Popover -->
+    <div class="admin-popover" id="adminPop-settings">
+      <div class="admin-popover-header">
+        <span class="admin-popover-title">
+          <svg width="15" height="15" fill="none" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          App Info &amp; Settings
+        </span>
+        <button class="admin-popover-close" onclick="closeAdminPopover('settings')">✕ Close</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:12px;color:var(--text-muted);">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;">
+          <div style="font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">App Info</div>
+          <div style="line-height:2;">
+            <div>Version: <strong style="color:var(--text);">v3.0</strong></div>
+            <div>Organisation: <strong style="color:var(--text);">Varma &amp; Varma CA</strong></div>
+            <div>Developed by: <strong style="background:linear-gradient(90deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Nihal Shalu</strong></div>
+          </div>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;">
+          <div style="font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Designations Storage</div>
+          <div style="font-size:11px;line-height:1.7;color:var(--text-muted);">Designation categories are saved in Firebase and sync across all devices instantly.</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- ── MANAGER ── -->
@@ -344,13 +582,9 @@ function switchTab(t){
             </select>
           </div>
           <div class="input-group" style="margin:0">
-            <label class="lbl">Rank</label>
+            <label class="lbl">Designation</label>
             <select id="newArticleRankEl">
               <option value="">— Select —</option>
-              <option value="Junior Trainee">Junior Trainee</option>
-              <option value="Senior Trainee">Senior Trainee</option>
-              <option value="Junior Article">Junior Article</option>
-              <option value="Senior Article">Senior Article</option>
             </select>
           </div>
           <div><button id="addArticleBtn" style="width:100%;height:42px;">+ Add Article</button></div>
@@ -421,8 +655,7 @@ function switchTab(t){
               <button class="picker-chip" data-filter="busy" onclick="togglePickerChip('busy')" style="background:rgba(255,255,255,.06);color:var(--text-dim);border:1px solid var(--border);padding:4px 12px;font-size:11px;font-weight:600;border-radius:20px;cursor:pointer;width:auto;transform:none;">● Busy</button>
               <span style="width:1px;height:16px;background:var(--border);display:inline-block;margin:0 2px;"></span>
               <button class="picker-chip" data-filter="Senior Article" onclick="togglePickerChip('Senior Article')" style="background:rgba(255,255,255,.06);color:var(--text-dim);border:1px solid var(--border);padding:4px 12px;font-size:11px;font-weight:600;border-radius:20px;cursor:pointer;width:auto;transform:none;">Senior</button>
-              <button class="picker-chip" data-filter="Junior Article" onclick="togglePickerChip('Junior Article')" style="background:rgba(255,255,255,.06);color:var(--text-dim);border:1px solid var(--border);padding:4px 12px;font-size:11px;font-weight:600;border-radius:20px;cursor:pointer;width:auto;transform:none;">Junior</button>
-              <button onclick="clearPickerChips()" style="background:rgba(255,255,255,.04);color:var(--text-dim);border:1px solid var(--border);padding:4px 10px;font-size:11px;font-weight:500;border-radius:20px;cursor:pointer;width:auto;transform:none;margin-left:2px;">✕ Clear</button>
+              <button class="picker-chip" data-filter="Junior Article" onclick="togglePickerChip('Junior Article')" style="background:rgba(255,255,255,.06);color:var(--text-dim);border:1px solid var(--border);padding:4px 12px;font-size:11px;font-weight:600;border-radius:20px;cursor:pointer;width:auto;transform:none;">Junior</button>              <button onclick="clearPickerChips()" style="background:rgba(255,255,255,.04);color:var(--text-dim);border:1px solid var(--border);padding:4px 10px;font-size:11px;font-weight:500;border-radius:20px;cursor:pointer;width:auto;transform:none;margin-left:2px;">✕ Clear</button>
             </div>
             <div id="pickerSearchWrap" style="display:none;position:relative;margin-bottom:8px;">
               <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;" width="13" height="13" fill="none" stroke="var(--text-dim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -514,12 +747,6 @@ function switchTab(t){
               <div class="alloc-filter-label">Work Status</div>
               <select id="filterStatus" onchange="applyAllocFilters()" style="font-size:12px;padding:8px 11px;">
                 <option value="">All Statuses</option>
-                <option value="Yet to Begin">Yet to Begin</option>
-                <option value="Ongoing">Ongoing</option>
-                <option value="Ready for Manager Review">Ready for Manager Review</option>
-                <option value="Ready for Partner Review">Ready for Partner Review</option>
-                <option value="Issued for Sign Off">Issued for Sign Off</option>
-                <option value="Completed">Completed</option>
               </select>
             </div>
             <div>
@@ -588,12 +815,7 @@ function switchTab(t){
     <div class="input-group">
       <label class="lbl">Work Status</label>
       <select id="endUpdateStatus">
-        <option value="Yet to Begin">Yet to Begin</option>
         <option value="Ongoing">Ongoing</option>
-        <option value="Ready for Manager Review">Ready for Manager Review</option>
-        <option value="Ready for Partner Review">Ready for Partner Review</option>
-        <option value="Issued for Sign Off">Issued for Sign Off</option>
-        <option value="Completed">Completed</option>
       </select>
     </div>
     <div class="input-group">
@@ -606,6 +828,9 @@ function switchTab(t){
     </div>
   </div>
 </div>
+
+<!-- SheetJS for Excel parsing -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <!-- ═══ FIREBASE LOGIC ═══ -->
 <script type="module">
@@ -625,6 +850,23 @@ const firebaseConfig = {
   appId:"1:1015226386601:web:3828848bb0b7acee6441b8"
 };
 const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getDatabase(app);
+
+// Expose Firebase bulk client import bridge for admin panel
+window._fbBulkImport = async (name, location) => {
+  await push(ref(db,'clients'), {name, location: location||''});
+};
+
+// Expose Firebase designation bridges
+window._fbSaveDesig = async (arr) => { await set(ref(db,'meta/designations'), arr); };
+window._fbLoadDesig = async () => { const s = await get(ref(db,'meta/designations')); return s.exists() ? s.val() : null; };
+
+// Expose Firebase course bridges
+window._fbSaveCourses = async (arr) => { await set(ref(db,'meta/courses'), arr); };
+window._fbLoadCourses = async () => { const s = await get(ref(db,'meta/courses')); return s.exists() ? s.val() : null; };
+
+// Expose Firebase work status bridges
+window._fbSaveStatuses = async (arr) => { await set(ref(db,'meta/workStatuses'), arr); };
+window._fbLoadStatuses = async () => { const s = await get(ref(db,'meta/workStatuses')); return s.exists() ? s.val() : null; };
 
 const UNDO_WINDOW_MS = 2 * 24 * 60 * 60 * 1000; // 2 days
 // Tracks in-window completions so they survive Firebase onValue re-fires.
@@ -779,7 +1021,7 @@ logoutBtn.addEventListener('click',()=>{if(confirm("Log out?"))signOut(auth);});
 
 // ── Auth state ────────────────────────────────────────────────
 onAuthStateChanged(auth,async user=>{
-  if(!user){loginDiv.classList.remove('hidden');appDiv.classList.add('hidden');currentRole='';currentUserName='';emailEl.value='';passEl.value='';return;}
+  if(!user){loginDiv.classList.remove('hidden');appDiv.classList.add('hidden');document.getElementById('adminPanel').classList.remove('visible');const atb=document.getElementById('adminToggleBtn');if(atb){atb.style.display='none';atb.classList.remove('active');}currentRole='';currentUserName='';emailEl.value='';passEl.value='';return;}
   const s=await get(ref(db,'users/'+user.uid));
   if(s.exists()){currentRole=s.val().role;currentUserName=s.val().name||user.email;}
   else{
@@ -797,8 +1039,10 @@ onAuthStateChanged(auth,async user=>{
   loginDiv.classList.add('hidden');appDiv.classList.remove('hidden');
   if(currentRole==='manager'){
     managerDiv.classList.remove('hidden');articlePanel.classList.add('hidden');
+    const atb=document.getElementById('adminToggleBtn');if(atb)atb.style.display='inline-flex';
     initLiveListeners();
     initMgrListeners();
+    if(window.populateDesigDropdowns){ loadDesignations(); loadCourses(); loadWorkStatuses(); }
     loadClientList();loadArticleList();loadAllocClientDrop();loadAllocTable();
   }else{
     managerDiv.classList.add('hidden');articlePanel.classList.remove('hidden');
@@ -831,7 +1075,7 @@ document.getElementById('editSaveBtn').addEventListener('click',async()=>{
   editModal.classList.remove('open');
 });
 
-// ── Rank pill helper ──────────────────────────────────────────
+// ── Designation pill helper ──────────────────────────────────────────
 function rankPillClass(rank){
   if(rank==='Junior Trainee') return 'pill-jt';
   if(rank==='Senior Trainee') return 'pill-st';
@@ -849,8 +1093,8 @@ window.openEdit=function(type,key,d){
     document.getElementById('editBody').innerHTML=`
       <div class="input-group"><label class="lbl">Name *</label><input id="editName" value="${d.name||''}"></div>
       <div class="input-group"><label class="lbl">Location (optional)</label><input id="editLoc" value="${d.location||''}"></div>
-      <div class="input-group"><label class="lbl">Course</label><select id="editCourse"><option value="">— Select —</option>${['CA','CMA','BCOM','CS','ACCA'].map(c=>`<option${d.course===c?' selected':''}>${c}</option>`).join('')}</select></div>
-      <div class="input-group"><label class="lbl">Rank</label><select id="editRank"><option value="">— Select —</option>${['Junior Trainee','Senior Trainee','Junior Article','Senior Article'].map(r=>`<option value="${r}"${d.rank===r?' selected':''}>${r}</option>`).join('')}</select></div>`;
+      <div class="input-group"><label class="lbl">Course</label><select id="editCourse"><option value="">— Select —</option>${(window.courseCategories||['CA','CMA','BCOM','CS','ACCA']).map(c=>`<option${d.course===c?' selected':''}>${c}</option>`).join('')}</select></div>
+      <div class="input-group"><label class="lbl">Designation</label><select id="editRank"><option value="">— Select —</option>${(window.designationCategories||['Junior Trainee','Senior Trainee','Junior Article','Senior Article']).map(r=>`<option value="${r}"${d.rank===r?' selected':''}>${r}</option>`).join('')}</select></div>`;
   }
   editModal.classList.add('open');
 };
@@ -1342,60 +1586,141 @@ window.showInlineArticleStatus=function(articleKey){
   if(!article){aspContent.innerHTML='<div class="asp-empty"><span>Article not found.</span></div>';return;}
 
   const today=new Date(); today.setHours(0,0,0,0);
-  const allocs=[];
-  if(cachedAllocSnap&&cachedAllocSnap.exists()&&cachedClientSnap&&cachedClientSnap.exists()){
-    const clientMap={};
+  const parseLocal=s=>{if(!s)return null;const[y,mo,d]=s.split('-').map(Number);const dt=new Date(y,mo-1,d);dt.setHours(0,0,0,0);return dt;};
+  const fmtD=s=>{if(!s)return null;const[y,mo,d]=s.split('-').map(Number);return new Date(y,mo-1,d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});};
+
+  // Get start/end dates from the allocate form
+  const formStart=document.getElementById('allocStart')?document.getElementById('allocStart').value:'';
+  const formEnd=document.getElementById('allocEnd')?document.getElementById('allocEnd').value:'';
+  const formStartMs=parseLocal(formStart);
+  const formEndMs=formEnd?parseLocal(formEnd):formStartMs;
+
+  // Build client map
+  const clientMap={};
+  if(cachedClientSnap&&cachedClientSnap.exists())
     cachedClientSnap.forEach(c=>{const d=c.val();clientMap[c.key]=d.location?`${d.name} · ${d.location}`:d.name;});
-    const completedGroups=new Set();
-    cachedAllocSnap.forEach(c=>{
-      const a=c.val();
-      if((a.status||'').toLowerCase()==='completed') completedGroups.add(a.teamId?`team_${a.teamId}`:`solo_${c.key}`);
-    });
+
+  // Build completed-groups set
+  const completedGroups=new Set();
+  if(cachedAllocSnap&&cachedAllocSnap.exists())
+    cachedAllocSnap.forEach(c=>{const a=c.val();if((a.status||'').toLowerCase()==='completed')completedGroups.add(a.teamId?`team_${a.teamId}`:`solo_${c.key}`);});
+
+  // Collect ALL allocations for this article (active + past + completed)
+  const activeAllocs=[];   // not completed, not ended before today
+  const pastAllocs=[];     // ended before today (or completed)
+  if(cachedAllocSnap&&cachedAllocSnap.exists()){
     cachedAllocSnap.forEach(c=>{
       const a=c.val();
       if(a.article!==articleKey) return;
       const gk=a.teamId?`team_${a.teamId}`:`solo_${c.key}`;
-      if(completedGroups.has(gk)) return;
-      const startMs=new Date(a.date); startMs.setHours(0,0,0,0);
-      const endMs=a.endDate?new Date(a.endDate):null; if(endMs) endMs.setHours(0,0,0,0);
-      if(endMs&&endMs<today) return;
-      allocs.push({client:clientMap[a.client]||a.client||'Unknown',date:a.date,endDate:a.endDate||'',workStatus:a.workStatus||'',startMs,endMs});
+      const isGroupCompleted=completedGroups.has(gk);
+      const startMs=parseLocal(a.date);
+      const endMs=parseLocal(a.endDate||'');
+      const isEnded=endMs&&endMs<today;
+      const rec={client:clientMap[a.client]||a.client||'Unknown',date:a.date,endDate:a.endDate||'',workStatus:a.workStatus||'',startMs,endMs,isGroupCompleted};
+      if(isGroupCompleted||isEnded) pastAllocs.push(rec);
+      else activeAllocs.push(rec);
     });
   }
-  allocs.sort((a,b)=>(a.startMs<=today?-1:1)-(b.startMs<=today?-1:1)||(a.startMs-b.startMs));
+
+  // Sort: active → current first (startMs<=today), then upcoming
+  activeAllocs.sort((a,b)=>(a.startMs<=today?0:1)-(b.startMs<=today?0:1)||(a.startMs-b.startMs));
+  // Sort past: most recent end date first
+  pastAllocs.sort((a,b)=>{
+    const ae=a.endMs||a.startMs, be=b.endMs||b.startMs;
+    return be-ae;
+  });
+
+  const currentWork=activeAllocs.filter(a=>a.startMs<=today);
+  const upcomingWork=activeAllocs.filter(a=>a.startMs>today);
+  const lastWork=pastAllocs.length?pastAllocs[0]:null; // most recently ended
+
+  // Detect collision: does any active alloc overlap with form's [formStartMs, formEndMs]?
+  let collisions=[];
+  if(formStartMs){
+    collisions=activeAllocs.filter(a=>{
+      const aEnd=a.endMs||Infinity;
+      // Overlap: alloc_start <= form_end AND alloc_end >= form_start
+      return a.startMs<=formEndMs && aEnd>=formStartMs;
+    });
+  }
 
   const subParts=[article.rank,article.course,article.location].filter(Boolean);
   const rankTag=article.rank?`<span style="font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;" class="${rankPillClass(article.rank)}">${article.rank}</span>`:'';
-  const fmtD=s=>{if(!s)return null;const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d).toLocaleDateString('en-GB',{day:'numeric',month:'short'});};
 
-  let html=`<div class="asp-card">
-    <div class="asp-card-name">${article.name}${rankTag}</div>`;
-  if(subParts.length) html+=`<div style="font-size:11px;color:var(--text-dim);margin-bottom:8px;">${subParts.join(' · ')}</div>`;
+  const renderAllocBlock=(a,dotColor,borderColor,bgColor)=>{
+    const wsClass=getWsClass(a.workStatus);
+    const wsBadge=a.workStatus?`<span class="work-status-sel ${wsClass}" style="font-size:10px;padding:2px 8px;cursor:default;">${a.workStatus}</span>`:'';
+    const period=a.endDate?`${fmtD(a.date)} – ${fmtD(a.endDate)}`:`${fmtD(a.date)} – Ongoing`;
+    return `<div style="background:${bgColor};border:1px solid ${borderColor};border-radius:7px;padding:9px 11px;margin-bottom:6px;">
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
+        <span style="width:6px;height:6px;border-radius:50%;background:${dotColor};display:inline-block;flex-shrink:0;"></span>
+        <span style="font-size:12px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.client}</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;">
+        <span style="font-size:10px;color:var(--text-dim);">📅 ${period}</span>
+        ${wsBadge}
+      </div>
+    </div>`;
+  };
 
-  if(!allocs.length){
-    html+=`<div class="asp-free-msg"><span style="width:8px;height:8px;border-radius:50%;background:#34d399;display:inline-block;flex-shrink:0;"></span> Currently free — no active or upcoming work</div>`;
-  } else {
-    allocs.forEach(a=>{
-      const isCurrent=a.startMs<=today;
-      const dotColor=isCurrent?'#f87171':'#fbbf24';
-      const borderColor=isCurrent?'rgba(239,68,68,.2)':'rgba(245,158,11,.2)';
-      const bgColor=isCurrent?'rgba(239,68,68,.05)':'rgba(245,158,11,.04)';
-      const wsClassMap={'Yet to Begin':'ws-ytb','Ongoing':'ws-ongoing','Ready for Manager Review':'ws-rfmr','Ready for Partner Review':'ws-rfpr','Issued for Sign Off':'ws-ifs','Completed':'ws-completed'};
-      const wsClass=wsClassMap[a.workStatus]||'ws-ongoing';
-      const wsBadge=a.workStatus?`<span class="work-status-sel ${wsClass}" style="font-size:10px;padding:2px 8px;cursor:default;">${a.workStatus}</span>`:'';
+  let html=`<div class="asp-card"><div class="asp-card-name">${article.name}${rankTag}</div>`;
+  if(subParts.length) html+=`<div style="font-size:11px;color:var(--text-dim);margin-bottom:10px;">${subParts.join(' · ')}</div>`;
+
+  // ── Collision Warning ──
+  if(collisions.length){
+    const conflictDetails=collisions.map(a=>{
       const period=a.endDate?`${fmtD(a.date)} – ${fmtD(a.endDate)}`:`${fmtD(a.date)} – Ongoing`;
-      html+=`<div style="background:${bgColor};border:1px solid ${borderColor};border-radius:7px;padding:9px 11px;margin-bottom:6px;">
-        <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
-          <span style="width:6px;height:6px;border-radius:50%;background:${dotColor};display:inline-block;flex-shrink:0;"></span>
-          <span style="font-size:12px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.client}</span>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;">
-          <span style="font-size:10px;color:var(--text-dim);">📅 ${period}</span>
-          ${wsBadge}
-        </div>
-      </div>`;
-    });
+      return `<div style="margin-top:4px;font-size:11px;opacity:.9;">⚠ <strong>${a.client}</strong> · ${period}</div>`;
+    }).join('');
+    html+=`<div class="asp-collision-warn">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <div><div style="font-weight:700;margin-bottom:2px;">Work collision in selected period</div>${conflictDetails}</div>
+    </div>`;
   }
+
+  // ── Today's / Selected Date Status ──
+  // If a start date is selected in the form, show status on that date; otherwise today
+  const refDate=formStartMs||today;
+  const refDateLabel=refDate.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  const isRefDateToday=refDate.getTime()===today.getTime();
+  const refDateNote=isRefDateToday?'Today':'Selected start date';
+  const workOnRefDate=activeAllocs.filter(a=>a.startMs<=refDate&&(!a.endMs||a.endMs>=refDate));
+  html+=`<div class="asp-section-label"><span class="dot" style="background:#6366f1;"></span> ${refDateNote} · ${refDateLabel}</div>`;
+  if(workOnRefDate.length){
+    workOnRefDate.forEach(a=>html+=renderAllocBlock(a,'#f87171','rgba(239,68,68,.2)','rgba(239,68,68,.05)'));
+  } else {
+    html+=`<div class="asp-free-msg" style="margin-bottom:8px;"><span style="width:8px;height:8px;border-radius:50%;background:#34d399;display:inline-block;flex-shrink:0;"></span> Free on this date — no active work</div>`;
+  }
+
+  // ── Last Work ──
+  html+=`<div class="asp-section-label" style="margin-top:12px;"><span class="dot" style="background:#94a3b8;"></span> Last Completed Work</div>`;
+  if(lastWork){
+    const wsClass=getWsClass(lastWork.workStatus);
+    const wsBadge=lastWork.workStatus?`<span class="work-status-sel ${wsClass}" style="font-size:10px;padding:2px 8px;cursor:default;">${lastWork.workStatus}</span>`:'';
+    const period=lastWork.endDate?`${fmtD(lastWork.date)} – ${fmtD(lastWork.endDate)}`:`${fmtD(lastWork.date)} – Ongoing`;
+    html+=`<div style="background:rgba(100,116,139,.08);border:1px solid rgba(100,116,139,.18);border-radius:7px;padding:9px 11px;margin-bottom:6px;">
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">
+        <span style="width:6px;height:6px;border-radius:50%;background:#94a3b8;display:inline-block;flex-shrink:0;"></span>
+        <span style="font-size:12px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${lastWork.client}</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;">
+        <span style="font-size:10px;color:var(--text-dim);">📅 ${period}</span>
+        ${wsBadge}
+      </div>
+    </div>`;
+  } else {
+    html+=`<div style="font-size:12px;color:var(--text-dim);font-style:italic;padding:4px 0 6px;">No previous work on record</div>`;
+  }
+
+  // ── Upcoming Work ──
+  html+=`<div class="asp-section-label" style="margin-top:12px;"><span class="dot" style="background:#fbbf24;"></span> Upcoming Work</div>`;
+  if(upcomingWork.length){
+    upcomingWork.forEach(a=>html+=renderAllocBlock(a,'#fbbf24','rgba(245,158,11,.2)','rgba(245,158,11,.04)'));
+  } else {
+    html+=`<div style="font-size:12px;color:var(--text-dim);font-style:italic;padding:4px 0 6px;">No upcoming allocations</div>`;
+  }
+
   html+='</div>';
   aspContent.innerHTML=html;
 };
@@ -1442,8 +1767,19 @@ function updateSummaryMeta(){
   periodEl.textContent=sd?(ed?`${sd} → ${ed}`:`${sd} → Ongoing`):'—';
 }
 
-document.getElementById('allocStart').addEventListener('change',()=>{refreshPicker();updateSummaryMeta();renderBirdsEye();});
-document.getElementById('allocEnd').addEventListener('change',()=>{if(document.getElementById('allocStart').value)refreshPicker();updateSummaryMeta();renderBirdsEye();});
+document.getElementById('allocStart').addEventListener('change',()=>{refreshPicker();updateSummaryMeta();renderBirdsEye();refreshAspIfVisible();});
+document.getElementById('allocEnd').addEventListener('change',()=>{if(document.getElementById('allocStart').value)refreshPicker();updateSummaryMeta();renderBirdsEye();refreshAspIfVisible();});
+
+// Re-render the inline article status panel for whichever article is currently displayed
+function refreshAspIfVisible(){
+  const aspContent=document.getElementById('aspContent');
+  if(!aspContent||!aspContent.innerHTML||aspContent.innerHTML.includes('asp-empty')) return;
+  const card=aspContent.querySelector('.asp-card');
+  if(!card) return;
+  // Find the currently highlighted picker item
+  const selItem=document.querySelector('#articlePicker .pick-item.sel')||document.querySelector('#articlePicker .pick-item:hover');
+  if(selItem&&selItem.dataset.key) showInlineArticleStatus(selItem.dataset.key);
+}
 document.getElementById('allocClient').addEventListener('change',updateSummaryMeta);
 
 // Live caches — populated only after login via initLiveListeners()
@@ -1454,6 +1790,7 @@ function initLiveListeners(){
   liveListenersInited=true;
   onValue(ref(db,'articles'),snap=>{
     cachedArticleSnap=snap;
+    window._cachedArticleSnap=snap; // expose for admin export
     rebuildMaps();
     renderBirdsEye();
     if(snap.exists()&&snap.size>0){
@@ -1462,6 +1799,7 @@ function initLiveListeners(){
   });
   onValue(ref(db,'clients'),snap=>{
     cachedClientSnap=snap;
+    window._cachedClientSnap=snap; // expose for admin bulk import
     rebuildMaps();
     renderBirdsEye();
   });
@@ -1607,9 +1945,8 @@ function renderAllocTable(){
       else workStatus='Ongoing';
     }
 
-    const wsClassMap={'Yet to Begin':'ws-ytb','Ongoing':'ws-ongoing','Ready for Manager Review':'ws-rfmr','Ready for Partner Review':'ws-rfpr','Issued for Sign Off':'ws-ifs','Completed':'ws-completed'};
-    const wsClass=wsClassMap[workStatus]||'ws-ongoing';
-    const statusOptions=['Yet to Begin','Ongoing','Ready for Manager Review','Ready for Partner Review','Issued for Sign Off','Completed']
+    const wsClass=getWsClass(workStatus);
+    const statusOptions=window.workStatuses
       .map(s=>`<option value="${s}"${s===workStatus?' selected':''}>${s}</option>`).join('');
     const statusCell=`<select class="work-status-sel ${wsClass} ws-sel" data-keys="${g.keys.join(',')}">${statusOptions}</select>`;
 
@@ -1776,11 +2113,10 @@ tbody.addEventListener('click',e=>{
 });
 
 // ── Work Status helpers ───────────────────────────────────────
-const wsClassMap={'Yet to Begin':'ws-ytb','Ongoing':'ws-ongoing','Ready for Manager Review':'ws-rfmr','Ready for Partner Review':'ws-rfpr','Issued for Sign Off':'ws-ifs','Completed':'ws-completed'};
 function styleWsSel(sel){
   // Remove all ws- classes
-  Object.values(wsClassMap).forEach(c=>sel.classList.remove(c));
-  const cls=wsClassMap[sel.value]||'ws-ongoing';
+  WS_COLOR_PALETTE.forEach(c=>sel.classList.remove(c));
+  const cls=getWsClass(sel.value);
   sel.classList.add(cls);
 }
 
@@ -2136,6 +2472,413 @@ function loadMyAllocs(name){
     });
   });
 }
+</script>
+<script>
+// ═══ ADMIN PANEL ═══
+// ── Designation categories (persisted in Firebase) ─────────────────────
+const DEFAULT_DESIGNATIONS = ['Junior Trainee','Senior Trainee','Junior Article','Senior Article'];
+
+window.designationCategories = [...DEFAULT_DESIGNATIONS];
+
+async function saveDesignations(){
+  await window._fbSaveDesig(window.designationCategories);
+}
+
+async function loadDesignations(){
+  const val = await window._fbLoadDesig();
+  if(val !== null){
+    window.designationCategories = Array.isArray(val) ? val : Object.values(val);
+  } else {
+    window.designationCategories = [...DEFAULT_DESIGNATIONS];
+    await saveDesignations();
+  }
+  renderDesigList();
+  populateDesigDropdowns();
+}
+
+window.populateDesigDropdowns = function populateDesigDropdowns(){
+  const cats = window.designationCategories;
+  // Add article form
+  const addSel = document.getElementById('newArticleRankEl');
+  if(addSel){
+    const curr = addSel.value;
+    addSel.innerHTML = '<option value="">— Select —</option>' + cats.map(c=>`<option value="${c}"${c===curr?' selected':''}>${c}</option>`).join('');
+  }
+}
+
+function renderDesigList(){
+  const el = document.getElementById('desigList');
+  if(!el) return;
+  const cats = window.designationCategories;
+  if(!cats.length){ el.innerHTML='<div style="color:var(--text-dim);font-size:13px;padding:8px 0;">No designations yet.</div>'; return; }
+  el.innerHTML = cats.map((c,i)=>`
+    <div class="desig-row">
+      <span>${c}</span>
+      <button class="danger" style="padding:4px 10px;font-size:11px;border-radius:5px;" onclick="removeDesignation(${i})">Remove</button>
+    </div>`).join('');
+}
+
+window.addDesignation = async function(){
+  const inp = document.getElementById('newDesigInput');
+  const val = (inp.value||'').trim();
+  if(!val) return inp.focus();
+  if(window.designationCategories.map(d=>d.toLowerCase()).includes(val.toLowerCase())){
+    inp.style.borderColor='var(--danger)'; setTimeout(()=>inp.style.borderColor='',1200);
+    return;
+  }
+  window.designationCategories.push(val);
+  await saveDesignations();
+  inp.value='';
+  renderDesigList();
+  populateDesigDropdowns();
+};
+
+window.removeDesignation = async function(i){
+  if(!confirm(`Remove designation "${window.designationCategories[i]}"?\nArticles currently using it won't be affected.`)) return;
+  window.designationCategories.splice(i,1);
+  await saveDesignations();
+  renderDesigList();
+  populateDesigDropdowns();
+};
+
+// ── Course categories (persisted in Firebase) ─────────────────────
+const DEFAULT_COURSES = ['CA','CMA','BCOM','CS','ACCA'];
+window.courseCategories = [...DEFAULT_COURSES];
+
+async function saveCourses(){ await window._fbSaveCourses(window.courseCategories); }
+
+async function loadCourses(){
+  const val = await window._fbLoadCourses();
+  if(val !== null){
+    window.courseCategories = Array.isArray(val) ? val : Object.values(val);
+  } else {
+    window.courseCategories = [...DEFAULT_COURSES];
+    await saveCourses();
+  }
+  renderCourseList();
+  populateCourseDropdowns();
+}
+
+window.populateCourseDropdowns = function populateCourseDropdowns(){
+  const cats = window.courseCategories;
+  const addSel = document.getElementById('newArticleCourseEl');
+  if(addSel){
+    const curr = addSel.value;
+    addSel.innerHTML = '<option value="">— Select —</option>' + cats.map(c=>`<option value="${c}"${c===curr?' selected':''}>${c}</option>`).join('');
+  }
+}
+
+function renderCourseList(){
+  const el = document.getElementById('courseList');
+  if(!el) return;
+  const cats = window.courseCategories;
+  if(!cats.length){ el.innerHTML='<div style="color:var(--text-dim);font-size:13px;padding:8px 0;">No courses yet.</div>'; return; }
+  el.innerHTML = cats.map((c,i)=>`
+    <div class="desig-row">
+      <span>${c}</span>
+      <button class="danger" style="padding:4px 10px;font-size:11px;border-radius:5px;" onclick="removeCourse(${i})">Remove</button>
+    </div>`).join('');
+}
+
+window.addCourse = async function(){
+  const inp = document.getElementById('newCourseInput');
+  const val = (inp.value||'').trim();
+  if(!val) return inp.focus();
+  if(window.courseCategories.map(c=>c.toLowerCase()).includes(val.toLowerCase())){
+    inp.style.borderColor='var(--danger)'; setTimeout(()=>inp.style.borderColor='',1200);
+    return;
+  }
+  window.courseCategories.push(val);
+  await saveCourses();
+  inp.value='';
+  renderCourseList();
+  populateCourseDropdowns();
+};
+
+window.removeCourse = async function(i){
+  if(!confirm(`Remove course "${window.courseCategories[i]}"?\nArticles currently using it won't be affected.`)) return;
+  window.courseCategories.splice(i,1);
+  await saveCourses();
+  renderCourseList();
+  populateCourseDropdowns();
+};
+
+// ── Work statuses (persisted in Firebase) ───────────────────────────
+const DEFAULT_WORK_STATUSES = ['Yet to Begin','Ongoing','Ready for Manager Review','Ready for Partner Review','Issued for Sign Off','Completed'];
+const WS_COLOR_PALETTE = ['ws-ytb','ws-ongoing','ws-rfmr','ws-rfpr','ws-ifs','ws-completed','ws-extra'];
+window.workStatuses = [...DEFAULT_WORK_STATUSES];
+
+window.getWsClass = function getWsClass(status){
+  const i = window.workStatuses.indexOf(status);
+  if(i === -1) return 'ws-ytb';
+  return WS_COLOR_PALETTE[i % WS_COLOR_PALETTE.length];
+};
+
+async function saveWorkStatuses(){ await window._fbSaveStatuses(window.workStatuses); }
+
+async function loadWorkStatuses(){
+  const val = await window._fbLoadStatuses();
+  if(val !== null){
+    window.workStatuses = Array.isArray(val) ? val : Object.values(val);
+  } else {
+    window.workStatuses = [...DEFAULT_WORK_STATUSES];
+    await saveWorkStatuses();
+  }
+  renderStatusList();
+  populateStatusDropdowns();
+}
+
+window.populateStatusDropdowns = function populateStatusDropdowns(){
+  const list = window.workStatuses;
+  // Filter dropdown (allocations view)
+  const filterSel = document.getElementById('filterStatus');
+  if(filterSel){
+    const curr = filterSel.value;
+    filterSel.innerHTML = '<option value="">All Statuses</option>' + list.map(s=>`<option value="${s}"${s===curr?' selected':''}>${s}</option>`).join('');
+  }
+  // End-update modal dropdown
+  const endSel = document.getElementById('endUpdateStatus');
+  if(endSel){
+    const curr = endSel.value;
+    endSel.innerHTML = list.map(s=>`<option value="${s}"${s===curr?' selected':''}>${s}</option>`).join('');
+  }
+}
+
+function renderStatusList(){
+  const el = document.getElementById('statusList');
+  if(!el) return;
+  const list = window.workStatuses;
+  if(!list.length){ el.innerHTML='<div style="color:var(--text-dim);font-size:13px;padding:8px 0;">No statuses yet.</div>'; return; }
+  el.innerHTML = list.map((s,i)=>`
+    <div class="desig-row">
+      <span><span class="work-status-sel ${WS_COLOR_PALETTE[i % WS_COLOR_PALETTE.length]}" style="font-size:10px;padding:2px 8px;cursor:default;margin-right:8px;">${s}</span></span>
+      <button class="danger" style="padding:4px 10px;font-size:11px;border-radius:5px;" onclick="removeWorkStatus(${i})">Remove</button>
+    </div>`).join('');
+}
+
+window.addWorkStatus = async function(){
+  const inp = document.getElementById('newStatusInput');
+  const val = (inp.value||'').trim();
+  if(!val) return inp.focus();
+  if(window.workStatuses.map(s=>s.toLowerCase()).includes(val.toLowerCase())){
+    inp.style.borderColor='var(--danger)'; setTimeout(()=>inp.style.borderColor='',1200);
+    return;
+  }
+  window.workStatuses.push(val);
+  await saveWorkStatuses();
+  inp.value='';
+  renderStatusList();
+  populateStatusDropdowns();
+};
+
+window.removeWorkStatus = async function(i){
+  if(window.workStatuses.length<=1){ alert('At least one work status must remain.'); return; }
+  if(!confirm(`Remove status "${window.workStatuses[i]}"?\nAllocations currently using it won't be affected.`)) return;
+  window.workStatuses.splice(i,1);
+  await saveWorkStatuses();
+  renderStatusList();
+  populateStatusDropdowns();
+};
+
+// ── Admin panel toggle ─────────────────────────────────────────
+window.toggleAdminPanel = function(){
+  const panel = document.getElementById('adminPanel');
+  const btn = document.getElementById('adminToggleBtn');
+  const isOpen = panel.classList.toggle('visible');
+  if(btn) btn.classList.toggle('active', isOpen);
+  if(!isOpen && activeAdminPopover) closeAdminPopover(activeAdminPopover);
+};
+
+// ── Admin panel popover toggle ─────────────────────────────────
+let activeAdminPopover = null;
+
+window.toggleAdminPopover = function(name){
+  const pop = document.getElementById('adminPop-'+name);
+  const btn = document.getElementById('adminBtn-'+name);
+  if(!pop) return;
+  if(activeAdminPopover && activeAdminPopover !== name){
+    // Close the previously open one
+    const prev = document.getElementById('adminPop-'+activeAdminPopover);
+    const prevBtn = document.getElementById('adminBtn-'+activeAdminPopover);
+    if(prev) prev.classList.remove('open');
+    if(prevBtn) prevBtn.classList.remove('active');
+  }
+  const isOpen = pop.classList.toggle('open');
+  btn.classList.toggle('active', isOpen);
+  activeAdminPopover = isOpen ? name : null;
+  if(isOpen && name==='desig') renderDesigList();
+  if(isOpen && name==='courses') renderCourseList();
+  if(isOpen && name==='statuses') renderStatusList();
+};
+
+window.closeAdminPopover = function(name){
+  const pop = document.getElementById('adminPop-'+name);
+  const btn = document.getElementById('adminBtn-'+name);
+  if(pop) pop.classList.remove('open');
+  if(btn) btn.classList.remove('active');
+  if(activeAdminPopover===name) activeAdminPopover=null;
+};
+
+// Close popovers when clicking outside
+document.addEventListener('click', e=>{
+  if(!activeAdminPopover) return;
+  const panel = document.getElementById('adminPanel');
+  if(panel && !panel.contains(e.target)){
+    closeAdminPopover(activeAdminPopover);
+  }
+});
+
+// ── Export helpers ─────────────────────────────────────────────
+window.exportClients = function(){
+  if(!window._cachedClientSnap || !window._cachedClientSnap.exists()){ alert('No clients to export.'); return; }
+  let csv = 'Name,Location\n';
+  window._cachedClientSnap.forEach(c=>{ const d=c.val(); csv+=`"${(d.name||'').replace(/"/g,'""')}","${(d.location||'').replace(/"/g,'""')}"\n`; });
+  downloadCSV(csv, 'clients_export.csv');
+};
+
+window.exportArticles = function(){
+  if(!window._cachedArticleSnap && !window.cachedArticleSnapRef){ alert('No articles to export.'); return; }
+  const snap = window._cachedArticleSnap;
+  if(!snap||!snap.exists()){ alert('No articles to export.'); return; }
+  let csv = 'Name,Location,Course,Designation\n';
+  snap.forEach(c=>{ const d=c.val(); csv+=`"${(d.name||'').replace(/"/g,'""')}","${(d.location||'').replace(/"/g,'""')}","${(d.course||'').replace(/"/g,'""')}","${(d.rank||'').replace(/"/g,'""')}"\n`; });
+  downloadCSV(csv, 'articles_export.csv');
+};
+
+function downloadCSV(csv, filename){
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ── Bulk Client Upload ─────────────────────────────────────────
+let bulkClientRows = [];
+
+window.handleBulkFile = function(input){
+  const file = input.files[0];
+  if(!file) return;
+  const ext = file.name.split('.').pop().toLowerCase();
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+    let rows = [];
+    if(ext === 'csv'){
+      const text = e.target.result;
+      const lines = text.split(/\r?\n/).filter(Boolean);
+      const headers = lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,'').toLowerCase());
+      const nameIdx = headers.findIndex(h=>h==='name');
+      const locIdx = headers.findIndex(h=>h==='location');
+      if(nameIdx<0){ alert('CSV must have a "Name" column header.'); return; }
+      for(let i=1;i<lines.length;i++){
+        const cols = lines[i].split(',').map(c=>c.trim().replace(/^"|"$/g,''));
+        const name = cols[nameIdx]||''; const loc = locIdx>=0 ? cols[locIdx]||'' : '';
+        if(name) rows.push({name,location:loc});
+      }
+    } else {
+      // xlsx/xls via SheetJS
+      const data = new Uint8Array(e.target.result);
+      const wb = XLSX.read(data,{type:'array'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const json = XLSX.utils.sheet_to_json(ws,{defval:''});
+      json.forEach(r=>{
+        const name = (r['Name']||r['name']||r['CLIENT NAME']||r['Client Name']||'').toString().trim();
+        const loc  = (r['Location']||r['location']||r['LOCATION']||'').toString().trim();
+        if(name) rows.push({name,location:loc});
+      });
+    }
+    bulkClientRows = rows;
+    renderUploadPreview();
+  };
+
+  if(ext==='csv') reader.readAsText(file);
+  else reader.readAsArrayBuffer(file);
+
+  // Drag zone reset
+  const zone = document.getElementById('uploadZone');
+  zone.classList.remove('drag');
+};
+
+function renderUploadPreview(){
+  const wrap = document.getElementById('uploadPreviewWrap');
+  const tableDiv = document.getElementById('uploadPreviewTable');
+  const countLabel = document.getElementById('uploadCountLabel');
+  const statusMsg = document.getElementById('uploadStatusMsg');
+  statusMsg.style.display='none';
+
+  if(!bulkClientRows.length){
+    wrap.style.display='none';
+    return;
+  }
+  wrap.style.display='block';
+  countLabel.textContent = `${bulkClientRows.length} client${bulkClientRows.length!==1?'s':''} ready to import`;
+  const preview = bulkClientRows.slice(0,20);
+  tableDiv.innerHTML = `<table><thead><tr><th>#</th><th>Name</th><th>Location</th></tr></thead><tbody>${
+    preview.map((r,i)=>`<tr><td style="color:var(--text-dim);">${i+1}</td><td>${r.name}</td><td>${r.location||'—'}</td></tr>`).join('')
+  }${bulkClientRows.length>20?`<tr><td colspan="3" style="color:var(--text-dim);text-align:center;padding:8px;">… and ${bulkClientRows.length-20} more</td></tr>`:''}</tbody></table>`;
+}
+
+window.clearBulkUpload = function(){
+  bulkClientRows=[];
+  document.getElementById('bulkClientFile').value='';
+  document.getElementById('uploadPreviewWrap').style.display='none';
+  document.getElementById('uploadStatusMsg').style.display='none';
+};
+
+window.importBulkClients = async function(){
+  if(!bulkClientRows.length) return;
+  const btn = document.getElementById('bulkImportBtn');
+  btn.disabled=true; btn.textContent='Importing…';
+
+  // We need Firebase push — access it via the module scope via a global bridge
+  if(!window._fbBulkImport){ btn.disabled=false; btn.textContent='⬆ Import Clients'; alert('Firebase not ready yet. Please try again in a moment.'); return; }
+  try{
+    let added=0, skipped=0;
+    // Get existing clients to detect duplicates
+    const existingNames = new Set();
+    if(window._cachedClientSnap && window._cachedClientSnap.exists()){
+      window._cachedClientSnap.forEach(c=>existingNames.add((c.val().name||'').toLowerCase().trim()));
+    }
+    for(const row of bulkClientRows){
+      if(existingNames.has(row.name.toLowerCase().trim())){ skipped++; continue; }
+      await window._fbBulkImport(row.name, row.location||'');
+      existingNames.add(row.name.toLowerCase().trim());
+      added++;
+    }
+    const msg = document.getElementById('uploadStatusMsg');
+    msg.style.display='block';
+    msg.style.color='#34d399';
+    msg.textContent = `✓ ${added} client${added!==1?'s':''} imported${skipped?` · ${skipped} skipped (duplicate)`:''}`;
+    clearBulkUpload();
+  }catch(err){
+    const msg = document.getElementById('uploadStatusMsg');
+    msg.style.display='block'; msg.style.color='#f87171';
+    msg.textContent = '✕ Import failed: '+err.message;
+  }
+  btn.disabled=false; btn.textContent='⬆ Import Clients';
+};
+
+// Drag-and-drop on upload zone
+document.addEventListener('DOMContentLoaded', ()=>{
+  const zone = document.getElementById('uploadZone');
+  if(!zone) return;
+  zone.addEventListener('dragover', e=>{ e.preventDefault(); zone.classList.add('drag'); });
+  zone.addEventListener('dragleave', ()=>zone.classList.remove('drag'));
+  zone.addEventListener('drop', e=>{
+    e.preventDefault(); zone.classList.remove('drag');
+    const file = e.dataTransfer.files[0]; if(!file) return;
+    const inp = document.getElementById('bulkClientFile');
+    // Create a DataTransfer to assign to the file input
+    try{ const dt=new DataTransfer(); dt.items.add(file); inp.files=dt.files; }catch(_){}
+    handleBulkFile({files:[file]});
+  });
+  // Init dropdowns
+  populateDesigDropdowns();
+  populateCourseDropdowns();
+  populateStatusDropdowns();
+});
 </script>
 </body>
 </html>
