@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Articleship Allocation v3.0</title>
+<title>Articleship Allocation v3.2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -323,7 +323,7 @@
     <p style="text-align:center;color:var(--text-dim);font-size:12px;margin-top:14px;">Wishing you a happy day.</p>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:var(--surface);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);">
-    <span style="font-size:11px;font-weight:700;color:#a5b4fc;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.25);padding:3px 10px;border-radius:20px;letter-spacing:.04em;">v3.0</span>
+    <span style="font-size:11px;font-weight:700;color:#a5b4fc;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.25);padding:3px 10px;border-radius:20px;letter-spacing:.04em;">v3.2</span>
     <span style="font-size:11px;color:var(--text-muted);">Developed by <span style="background:linear-gradient(90deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;font-size:12px;">Nihal Shalu</span></span>
   </div>
 </div>
@@ -347,7 +347,7 @@ function switchTab(t){
 
   <div class="app-topbar">
     <div>
-      <h2>Articleship Dashboard <span style="font-size:12px;font-weight:700;color:#a5b4fc;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.25);padding:2px 9px;border-radius:20px;vertical-align:middle;letter-spacing:.04em;">v3.0</span></h2>
+      <h2>Articleship Dashboard <span style="font-size:12px;font-weight:700;color:#a5b4fc;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.25);padding:2px 9px;border-radius:20px;vertical-align:middle;letter-spacing:.04em;">v3.2</span></h2>
       <p id="userRoleEl"></p>
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
@@ -357,6 +357,22 @@ function switchTab(t){
         ⚙ Admin
         <span class="chevron"><svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
       </button>
+      <div style="position:relative;">
+        <button id="notifBellBtn" class="btn-logout" style="position:relative;padding:8px 11px;" onclick="toggleNotifPanel()" title="Notifications">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span id="notifBadge" style="display:none;position:absolute;top:1px;right:1px;background:var(--danger);color:#fff;font-size:9px;font-weight:700;min-width:15px;height:15px;border-radius:20px;align-items:center;justify-content:center;padding:0 3px;line-height:1;"></span>
+        </button>
+        <div class="admin-popover" id="notifPopover" style="left:auto;right:0;width:320px;max-height:380px;overflow-y:auto;">
+          <div class="admin-popover-header">
+            <span class="admin-popover-title">🔔 Notifications</span>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <button class="admin-popover-close" style="color:#f87171;border-color:rgba(248,113,113,.3);" onclick="deleteAllNotifs()" title="Delete all notifications">🗑 Clear All</button>
+              <button class="admin-popover-close" onclick="closeNotifPanel()">✕ Close</button>
+            </div>
+          </div>
+          <div id="notifListDiv"><div class="empty">No notifications yet.</div></div>
+        </div>
+      </div>
       <button id="logoutBtn" class="btn-logout">Sign Out</button>
     </div>
   </div>
@@ -528,7 +544,7 @@ function switchTab(t){
         <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;">
           <div style="font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">App Info</div>
           <div style="line-height:2;">
-            <div>Version: <strong style="color:var(--text);">v3.0</strong></div>
+            <div>Version: <strong style="color:var(--text);">v3.2</strong></div>
             <div>Organisation: <strong style="color:var(--text);">Varma &amp; Varma CA</strong></div>
             <div>Developed by: <strong style="background:linear-gradient(90deg,#6366f1,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Nihal Shalu</strong></div>
           </div>
@@ -549,6 +565,7 @@ function switchTab(t){
       <button id="mgrTab-articles"   class="mgr-tab"        onclick="switchMgrTab('articles')">👤 Articles</button>
       <button id="mgrTab-allocate"   class="mgr-tab"        onclick="switchMgrTab('allocate')">📌 New Allocation</button>
       <button id="mgrTab-viewallocs" class="mgr-tab"        onclick="switchMgrTab('viewallocs')">📋 View Allocations</button>
+      <button id="mgrTab-completed"  class="mgr-tab"        onclick="switchMgrTab('completed')">✅ Completed Work</button>
     </nav>
 
     <!-- CLIENTS -->
@@ -725,6 +742,7 @@ function switchTab(t){
             <span id="allocFilterCount" style="font-size:12px;color:#a5b4fc;background:var(--primary-soft);padding:3px 10px;border-radius:20px;border:1px solid rgba(99,102,241,.2);display:none;"></span>
           </div>
           <button id="completeAllAllocsBtn" class="btn-complete" style="font-size:12px;padding:6px 14px;display:none;">✓ Mark All as Completed</button>
+          <button id="undoAllAllocsBtn" class="btn-undo" style="font-size:12px;padding:6px 14px;display:none;margin-left:8px;">↩ Undo All</button>
         </div>
         <!-- Filter bar -->
         <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:14px;">
@@ -766,6 +784,47 @@ function switchTab(t){
           <table>
             <thead><tr><th>Article(s)</th><th>Client</th><th>Period</th><th>Status</th><th style="text-align:right;">Action</th></tr></thead>
             <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPLETED WORK -->
+    <div id="mgrPanel-completed" class="hidden">
+      <div class="panel-section">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <h3 style="margin:0;">Completed Work</h3>
+            <span id="historyCount" style="font-size:13px;color:var(--text-muted);background:var(--surface2);padding:4px 12px;border-radius:20px;border:1px solid var(--border);"></span>
+            <span id="historyFilterCount" style="font-size:12px;color:#a5b4fc;background:var(--primary-soft);padding:3px 10px;border-radius:20px;border:1px solid rgba(99,102,241,.2);display:none;"></span>
+          </div>
+        </div>
+        <!-- Filter bar -->
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:14px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;align-items:end;">
+            <div>
+              <div class="alloc-filter-label">Article</div>
+              <div style="position:relative;">
+                <svg style="position:absolute;left:9px;top:50%;transform:translateY(-50%);pointer-events:none;" width="12" height="12" fill="none" stroke="var(--text-dim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="filterHistArticle" placeholder="Search article…" oninput="applyHistoryFilters()" style="padding-left:28px;font-size:12px;padding-top:8px;padding-bottom:8px;">
+              </div>
+            </div>
+            <div>
+              <div class="alloc-filter-label">Client</div>
+              <div style="position:relative;">
+                <svg style="position:absolute;left:9px;top:50%;transform:translateY(-50%);pointer-events:none;" width="12" height="12" fill="none" stroke="var(--text-dim)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="filterHistClient" placeholder="Search client…" oninput="applyHistoryFilters()" style="padding-left:28px;font-size:12px;padding-top:8px;padding-bottom:8px;">
+              </div>
+            </div>
+            <div>
+              <button class="filter-clear-btn" onclick="clearHistoryFilters()" title="Clear all filters">✕ Clear</button>
+            </div>
+          </div>
+        </div>
+        <div class="alloc-table-wrap">
+          <table>
+            <thead><tr><th>Article(s)</th><th>Client</th><th>Period</th><th>Completed On</th></tr></thead>
+            <tbody id="historyTbody"><tr><td colspan="4" class="empty">No completed work yet.</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -829,6 +888,58 @@ function switchTab(t){
   </div>
 </div>
 
+<!-- ═══ Developer Panel (Ctrl+Shift+D) ═══ -->
+<div id="devPanelModal" class="modal-bg">
+  <div class="modal-box" style="max-width:460px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <h3 style="margin:0;font-size:15px;display:flex;align-items:center;gap:7px;">🛠 Developer Panel</h3>
+      <button id="devPanelCloseBtn" style="background:rgba(255,255,255,.07);color:var(--text-muted);padding:5px 12px;font-size:12px;border-radius:8px;">✕</button>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin:0 0 18px;">Send a message to everyone currently using the app. <b>Ctrl+Shift+D</b> to toggle this panel.</p>
+
+    <div class="input-group">
+      <label class="lbl">Message</label>
+      <textarea id="devMsgText" rows="3" placeholder="Type a message to broadcast…" style="width:100%;padding:10px 13px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;outline:none;resize:vertical;font-family:inherit;"></textarea>
+    </div>
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);margin-bottom:14px;cursor:pointer;">
+      <input type="checkbox" id="devMsgAsPopup" checked style="width:auto;accent-color:var(--primary);">
+      Also show as pop-up
+    </label>
+    <div class="input-group" id="devMsgDurationWrap">
+      <label class="lbl">Show pop-up to anyone who opens the app within</label>
+      <select id="devMsgDuration">
+        <option value="15">15 minutes</option>
+        <option value="60" selected>1 hour</option>
+        <option value="360">6 hours</option>
+        <option value="1440">24 hours</option>
+        <option value="manual">Until I stop it</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button id="devSendMsgBtn" style="flex:1;">Send</button>
+    </div>
+
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+      <label class="lbl" style="margin-bottom:8px;">Recently Sent</label>
+      <div id="devSentListDiv" style="display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto;">
+        <div class="empty" style="padding:12px 0;">Nothing sent yet.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Pop-up Message (shown to all logged-in users) ═══ -->
+<div id="popupMsgModal" class="modal-bg">
+  <div class="modal-box" style="max-width:380px;">
+    <h3 id="popupMsgTitle" style="display:flex;align-items:center;gap:7px;">📣 Message</h3>
+    <p id="popupMsgBody" style="font-size:14px;line-height:1.5;color:var(--text);margin:0 0 8px;white-space:pre-wrap;"></p>
+    <p id="popupMsgMeta" style="font-size:11px;color:var(--text-dim);margin:0 0 18px;"></p>
+    <div class="modal-acts">
+      <button id="popupMsgCloseBtn" style="padding:10px 20px;border-radius:10px;font-size:14px;font-weight:500;width:100%;">Close</button>
+    </div>
+  </div>
+</div>
+
 <!-- SheetJS for Excel parsing -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -875,6 +986,44 @@ const pendingCompletions = {};
 
 function isUndoAvailable(completedAt){ return !!(completedAt && (Date.now()-new Date(completedAt).getTime())<UNDO_WINDOW_MS); }
 
+// ── "Undo All" for the bulk Mark All as Completed action (separate 30-min window) ──
+const BULK_UNDO_WINDOW_MS = 30 * 60 * 1000; // 30 minutes
+const BULK_UNDO_STORAGE_KEY = 'mngr_bulkCompleteUndo';
+
+function getBulkUndoData(){
+  try{
+    const raw=localStorage.getItem(BULK_UNDO_STORAGE_KEY);
+    if(!raw) return null;
+    const data=JSON.parse(raw);
+    if(!data||!data.completedAt||!Array.isArray(data.keys)||!data.keys.length) return null;
+    if((Date.now()-new Date(data.completedAt).getTime())>=BULK_UNDO_WINDOW_MS){
+      localStorage.removeItem(BULK_UNDO_STORAGE_KEY);
+      return null;
+    }
+    return data;
+  }catch(e){ return null; }
+}
+function setBulkUndoData(keys){
+  localStorage.setItem(BULK_UNDO_STORAGE_KEY, JSON.stringify({keys, completedAt:new Date().toISOString()}));
+}
+function clearBulkUndoData(){ localStorage.removeItem(BULK_UNDO_STORAGE_KEY); }
+
+let bulkUndoTimer=null;
+function refreshUndoAllBtn(){
+  const btn=document.getElementById('undoAllAllocsBtn');
+  if(!btn) return;
+  if(bulkUndoTimer){ clearTimeout(bulkUndoTimer); bulkUndoTimer=null; }
+  const data=getBulkUndoData();
+  if(data){
+    btn.style.display='';
+    const msLeft=BULK_UNDO_WINDOW_MS-(Date.now()-new Date(data.completedAt).getTime());
+    bulkUndoTimer=setTimeout(refreshUndoAllBtn, Math.max(msLeft,0)+250);
+  }else{
+    btn.style.display='none';
+  }
+}
+refreshUndoAllBtn(); // restore button state on page load if a bulk completion is still within its 30-min window
+
 
 // Move a completed group to history/ node and remove from allocations/
 async function expireGroupToHistory(groupKeys){
@@ -884,7 +1033,7 @@ async function expireGroupToHistory(groupKeys){
       let record=null;
       cachedAllocSnap.forEach(c=>{ if(c.key===k) record=c.val(); });
       if(record){
-        await set(ref(db,'history/'+k), {...record, status:'Completed', _movedAt: new Date().toISOString()});
+        await set(ref(db,'history/'+k), {...record, status:'Signed off', _movedAt: new Date().toISOString()});
       }
       await remove(ref(db,'allocations/'+k));
     }catch(e){ console.error('expireGroupToHistory error:',e); }
@@ -972,13 +1121,14 @@ const loginBtn=document.getElementById('loginBtn'), logoutBtn=document.getElemen
 const registerFields=document.getElementById('registerFields');
 const toggleAuthBtn=document.getElementById('toggleAuthBtn'), toggleTextSpan=document.getElementById('toggleTextSpan');
 const tbody=document.getElementById('tbody'), myDataDiv=document.getElementById('myDataDiv');
+const historyTbody=document.getElementById('historyTbody');
 const userRoleEl=document.getElementById('userRoleEl');
 
 let currentRole='', currentUserName='', isRegMode=false;
 
 // ── Manager tab switcher ──────────────────────────────────────
 window.switchMgrTab=function(tab){
-  ['clients','articles','allocate','viewallocs'].forEach(t=>{
+  ['clients','articles','allocate','viewallocs','completed'].forEach(t=>{
     document.getElementById('mgrPanel-'+t).classList.add('hidden');
     document.getElementById('mgrTab-'+t).classList.remove('active');
   });
@@ -986,6 +1136,8 @@ window.switchMgrTab=function(tab){
   document.getElementById('mgrTab-'+tab).classList.add('active');
   // Refresh picker when opening allocate tab so newly added articles always appear
   if(tab==='allocate'){renderBirdsEye();if(document.getElementById('allocStart').value)refreshPicker();}
+  // Refresh completed-work table whenever the tab is opened, so it always reflects history/ live
+  if(tab==='completed'){renderHistoryTable();}
 };
 
 // ── Auth UI toggle ────────────────────────────────────────────
@@ -1021,7 +1173,7 @@ logoutBtn.addEventListener('click',()=>{if(confirm("Log out?"))signOut(auth);});
 
 // ── Auth state ────────────────────────────────────────────────
 onAuthStateChanged(auth,async user=>{
-  if(!user){loginDiv.classList.remove('hidden');appDiv.classList.add('hidden');document.getElementById('adminPanel').classList.remove('visible');const atb=document.getElementById('adminToggleBtn');if(atb){atb.style.display='none';atb.classList.remove('active');}currentRole='';currentUserName='';emailEl.value='';passEl.value='';return;}
+  if(!user){loginDiv.classList.remove('hidden');appDiv.classList.add('hidden');document.getElementById('adminPanel').classList.remove('visible');const atb=document.getElementById('adminToggleBtn');if(atb){atb.style.display='none';atb.classList.remove('active');}currentRole='';currentUserName='';emailEl.value='';passEl.value='';const np=document.getElementById('notifPopover');if(np)np.classList.remove('open');const dp=document.getElementById('devPanelModal');if(dp)dp.classList.remove('open');return;}
   const s=await get(ref(db,'users/'+user.uid));
   if(s.exists()){currentRole=s.val().role;currentUserName=s.val().name||user.email;}
   else{
@@ -1037,6 +1189,7 @@ onAuthStateChanged(auth,async user=>{
   }
   userRoleEl.textContent=`Logged in as ${currentUserName}`;
   loginDiv.classList.add('hidden');appDiv.classList.remove('hidden');
+  initDevNotifListener();
   if(currentRole==='manager'){
     managerDiv.classList.remove('hidden');articlePanel.classList.add('hidden');
     const atb=document.getElementById('adminToggleBtn');if(atb)atb.style.display='inline-flex';
@@ -1783,7 +1936,7 @@ function refreshAspIfVisible(){
 document.getElementById('allocClient').addEventListener('change',updateSummaryMeta);
 
 // Live caches — populated only after login via initLiveListeners()
-let cachedArticleSnap=null, cachedClientSnap=null, cachedAllocSnap=null;
+let cachedArticleSnap=null, cachedClientSnap=null, cachedAllocSnap=null, cachedHistorySnap=null;
 let liveListenersInited=false;
 function initLiveListeners(){
   if(liveListenersInited) return;
@@ -1822,6 +1975,10 @@ function initLiveListeners(){
     renderAllocTable();
     renderBirdsEye();
     if(document.getElementById('allocStart').value) refreshPicker();
+  });
+  onValue(ref(db,'history'),snap=>{
+    cachedHistorySnap=snap;
+    renderHistoryTable();
   });
 }
 
@@ -1866,6 +2023,7 @@ function rebuildMaps(){
   if(cachedClientSnap!==null && cachedArticleSnap!==null){
     cachedMaps=buildMaps(cachedClientSnap, cachedArticleSnap);
     renderAllocTable();
+    renderHistoryTable();
   }
 }
 
@@ -1940,7 +2098,7 @@ function renderAllocTable(){
     // Retrieve stored workStatus; derive default if not set
     let workStatus=g.workStatus||'';
     if(!workStatus){
-      if(isCompleted) workStatus='Completed';
+      if(isCompleted) workStatus='Signed off';
       else if(startDt && startDt>today) workStatus='Yet to Begin';
       else workStatus='Ongoing';
     }
@@ -1961,7 +2119,7 @@ function renderAllocTable(){
     const completeBtn=isCompleted
       ? (canUndo
           ? `<button class="btn-undo undo-btn" data-keys="${g.keys.join(',')}">↩ Undo</button>`
-          : `<span style="font-size:11px;color:var(--text-dim);font-style:italic;">Completed</span>`)
+          : `<span style="font-size:11px;color:var(--text-dim);font-style:italic;">Signed off</span>`)
       : `<button class="btn-complete complete-btn" data-keys="${g.keys.join(',')}">Mark Complete</button>`;
     const editData=JSON.stringify({client:g.client,date:g.date,endDate:g.endDate,keys:g.keys,articles:g.articles,status:g.status,workStatus}).replace(/"/g,'&quot;');
     html+=`<tr data-article="${articleNames.toLowerCase()}" data-client="${client.toLowerCase()}" data-status="${workStatus}" data-date="${g.date}">
@@ -1983,7 +2141,89 @@ function renderAllocTable(){
   applyAllocFilters();
 }
 
-// ── View Allocations Filters ──────────────────────────────────
+// ── Completed Work table (reads from history/ node) ────────────
+function renderHistoryTable(){
+  if(!historyTbody) return;
+  if(!cachedMaps||!cachedHistorySnap){ return; }
+  const countEl=document.getElementById('historyCount');
+
+  if(!cachedHistorySnap.exists()){
+    historyTbody.innerHTML='<tr><td colspan="4" class="empty">No completed work yet.</td></tr>';
+    if(countEl) countEl.textContent='';
+    return;
+  }
+
+  const recs=[];
+  cachedHistorySnap.forEach(c=>{ recs.push({key:c.key,...c.val()}); });
+  if(countEl) countEl.textContent=`${recs.length} record${recs.length!==1?'s':''}`;
+
+  // Group by teamId (team allocations) or individual key (solo)
+  const groups={};
+  recs.forEach(d=>{
+    const gk=d.teamId ? `team_${d.teamId}` : `solo_${d.key}`;
+    if(!groups[gk]) groups[gk]={client:d.client,date:d.date,endDate:d.endDate||'',articles:[],keys:[],completedAt:null,movedAt:null};
+    else if(d.endDate) groups[gk].endDate=d.endDate;
+    groups[gk].articles.push(d.article);
+    groups[gk].keys.push(d.key);
+    if(d._completedAt&&!groups[gk].completedAt) groups[gk].completedAt=d._completedAt;
+    if(d._movedAt&&(!groups[gk].movedAt||d._movedAt>groups[gk].movedAt)) groups[gk].movedAt=d._movedAt;
+  });
+
+  // Sort newest-completed-first so the latest completed work always shows at the top
+  const sortedGroups=Object.values(groups).sort((a,b)=>{
+    const aT=new Date(a.movedAt||a.completedAt||a.date||0).getTime();
+    const bT=new Date(b.movedAt||b.completedAt||b.date||0).getTime();
+    return bT-aT;
+  });
+
+  const fmtDateTime=s=>{
+    if(!s) return '—';
+    const dt=new Date(s);
+    if(isNaN(dt.getTime())) return '—';
+    return dt.toLocaleDateString(undefined,{day:'2-digit',month:'short',year:'numeric'})+' · '+dt.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
+  };
+
+  let html='';
+  sortedGroups.forEach(g=>{
+    const client=cachedMaps.rc(g.client);
+    const articleNames=g.articles.map(a=>cachedMaps.ra(a)).join(', ');
+    const completedLabel=fmtDateTime(g.completedAt||g.movedAt);
+    html+=`<tr data-article="${articleNames.toLowerCase()}" data-client="${client.toLowerCase()}">
+      <td>${articleNames}</td>
+      <td>${client}</td>
+      <td><span class="date-badge">${fmtPeriod(g.date,g.endDate)}</span></td>
+      <td>${completedLabel}</td>
+    </tr>`;
+  });
+  historyTbody.innerHTML=html||'<tr><td colspan="4" class="empty">No completed work yet.</td></tr>';
+
+  applyHistoryFilters();
+}
+
+window.applyHistoryFilters=function(){
+  const artQ=(document.getElementById('filterHistArticle')||{}).value||'';
+  const cliQ=(document.getElementById('filterHistClient')||{}).value||'';
+  const rows=historyTbody.querySelectorAll('tr[data-article]');
+  let visible=0;
+  rows.forEach(row=>{
+    const artMatch=!artQ||row.dataset.article.includes(artQ.toLowerCase());
+    const cliMatch=!cliQ||row.dataset.client.includes(cliQ.toLowerCase());
+    const show=artMatch&&cliMatch;
+    row.style.display=show?'':'none';
+    if(show) visible++;
+  });
+  const countEl=document.getElementById('historyFilterCount');
+  const hasFilter=artQ||cliQ;
+  if(countEl){
+    if(hasFilter&&rows.length){countEl.textContent=`${visible} of ${rows.length} shown`;countEl.style.display='';}
+    else{countEl.style.display='none';}
+  }
+};
+window.clearHistoryFilters=function(){
+  const a=document.getElementById('filterHistArticle'); if(a)a.value='';
+  const c=document.getElementById('filterHistClient'); if(c)c.value='';
+  applyHistoryFilters();
+};
 window.applyAllocFilters=function(){
   const artQ=(document.getElementById('filterArticle')||{}).value||'';
   const cliQ=(document.getElementById('filterClient')||{}).value||'';
@@ -2046,6 +2286,7 @@ tbody.addEventListener('click',e=>{
       const updates={};
       keys.forEach(k=>{
         updates['allocations/'+k+'/status']='completed';
+        updates['allocations/'+k+'/workStatus']='Signed off';
         updates['allocations/'+k+'/_completedAt']=completedAt;
         updates['allocations/'+k+'/_pendingHistory']=true; // tells article site this is within undo window
         // Save previous endDate for undo restore, then set today as endDate if not already set
@@ -2168,21 +2409,60 @@ document.getElementById('completeAllAllocsBtn').addEventListener('click',async()
   const todayStr=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
   const updates={};
   const completedAt=new Date().toISOString();
+  const newlyCompletedKeys=[];
   snap.forEach(c=>{
     const v=c.val();
     if((v.status||'').toLowerCase()!=='completed'){
       updates['allocations/'+c.key+'/status']='completed';
+      updates['allocations/'+c.key+'/workStatus']='Signed off';
       updates['allocations/'+c.key+'/_completedAt']=completedAt;
       updates['allocations/'+c.key+'/_pendingHistory']=true; // tells article site this is within undo window
       const prev=v.endDate||'';
       updates['allocations/'+c.key+'/_prevEndDate']=prev;
       if(!prev) updates['allocations/'+c.key+'/endDate']=todayStr;
+      newlyCompletedKeys.push(c.key);
     }
   });
   if(!Object.keys(updates).length) return alert('All allocations are already completed.');
   // Register in pendingCompletions so undo is available
-  snap.forEach(c=>{ if((c.val().status||'').toLowerCase()!=='completed') pendingCompletions[c.key]={completedAt}; });
+  newlyCompletedKeys.forEach(k=>{ pendingCompletions[k]={completedAt}; });
   await update(ref(db,'/'), updates);
+  // Record this bulk action so a single "Undo All" can revert it within 30 minutes
+  setBulkUndoData(newlyCompletedKeys);
+  refreshUndoAllBtn();
+});
+
+document.getElementById('undoAllAllocsBtn').addEventListener('click',async()=>{
+  const data=getBulkUndoData();
+  if(!data){
+    alert('The 30-minute Undo All window has expired. Individual rows may still show their own Undo button if still within their window.');
+    refreshUndoAllBtn();
+    return;
+  }
+  const keys=data.keys;
+  if(!confirm(`Undo completion for all ${keys.length} allocation(s) from the last "Mark All as Completed"?`)) return;
+  keys.forEach(k=>delete pendingCompletions[k]);
+  const atomicUpdate={};
+  keys.forEach(k=>{
+    let rec=null;
+    if(cachedAllocSnap&&cachedAllocSnap.exists()){
+      cachedAllocSnap.forEach(c=>{ if(c.key===k) rec=c.val(); });
+    }
+    if(!rec) return; // record may have since been deleted or already changed
+    atomicUpdate['allocations/'+k+'/status']=null; // delete — active records have no status field
+    atomicUpdate['allocations/'+k+'/_completedAt']=null;
+    atomicUpdate['allocations/'+k+'/_pendingHistory']=null;
+    if(Object.prototype.hasOwnProperty.call(rec,'_prevEndDate')){
+      const prev=rec._prevEndDate;
+      atomicUpdate['allocations/'+k+'/endDate']=(prev&&prev!=='')?prev:null;
+      atomicUpdate['allocations/'+k+'/_prevEndDate']=null;
+    }
+  });
+  try{
+    await update(ref(db,'/'),atomicUpdate);
+    clearBulkUndoData();
+    refreshUndoAllBtn();
+  }catch(e){ alert('Undo All error: '+e.message); }
 });
 
 // ── Edit Allocation Modal ─────────────────────────────────────
@@ -2459,7 +2739,7 @@ function loadMyAllocs(name){
     if(as.exists())as.forEach(c=>{if((c.val().name||'').toLowerCase().trim()===(name||'').toLowerCase().trim())myKey=c.key;});
     onValue(ref(db,'allocations'),snap=>{
       const all=[];
-      if(snap.exists())snap.forEach(c=>all.push(c.val()));
+      if(snap.exists())snap.forEach(c=>{ all.push(c.val()); });
       const mine=all.filter(d=>d.article===myKey);
       mine.sort((a,b)=>new Date(b.date)-new Date(a.date));
       const seen=new Set(); let html='';
@@ -2472,6 +2752,265 @@ function loadMyAllocs(name){
     });
   });
 }
+
+// ── Developer Panel & Notifications ─────────────────────────────
+// Opened with Ctrl+Shift+D. Messages are broadcast via the 'devMessages'
+// Firebase node so every logged-in user (manager or article) receives
+// them live — as a pop-up (with a close button) and/or as an entry in
+// the notification bell dropdown in the top bar. Each pop-up can be
+// timed (only shown to people who open the app within a chosen window)
+// and can be stopped early so it stops circulating immediately.
+//
+// Pop-up "seen" state is tracked per DEVICE (localStorage), not per
+// login — so if the same username signs in on a second device while a
+// message is still active, that device pops it up too, and reopening
+// the app on a device that already saw it won't show it again.
+let devNotifListenerInited=false;
+let devNotifAll=[];                     // {key,text,popup,active,expiresAt,sentBy,sentAt} newest-first
+let devNotifByKey={};
+let devNotifReadKeys=new Set(JSON.parse(localStorage.getItem('devNotifReadKeys')||'[]'));
+let devPopupShownKeys=new Set(JSON.parse(localStorage.getItem('devPopupShownKeys')||'[]')); // per-device
+let popupQueue=[];                      // queue of keys waiting to be shown
+let popupShowing=false;
+let currentPopupKey=null;
+
+function escapeHtml(s){
+  return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// A message is still allowed to pop up if it hasn't been manually stopped
+// and (if it has a time window) that window hasn't elapsed yet.
+function isMsgPoppable(msg){
+  if(!msg) return false;
+  if(msg.active===false) return false;
+  if(msg.expiresAt && Date.now()>msg.expiresAt) return false;
+  return true;
+}
+
+function markPopupShownOnThisDevice(key){
+  devPopupShownKeys.add(key);
+  localStorage.setItem('devPopupShownKeys',JSON.stringify([...devPopupShownKeys]));
+}
+
+function initDevNotifListener(){
+  if(devNotifListenerInited) return;
+  devNotifListenerInited=true;
+  onValue(ref(db,'devMessages'),snap=>{
+    const items=[];
+    if(snap.exists()) snap.forEach(c=>{ items.push({key:c.key,...c.val()}); });
+    // ── Build the lookup map FIRST so processPopupQueue can resolve keys ──
+    devNotifAll=items.sort((a,b)=>new Date(b.sentAt||0)-new Date(a.sentAt||0));
+    devNotifByKey={}; devNotifAll.forEach(n=>devNotifByKey[n.key]=n);
+
+    // NOW check which messages this device hasn't shown yet (active & in window).
+    // This fires on the very first snapshot too, so a brand-new device opening
+    // the app while a message is still live will see it immediately.
+    items.forEach(it=>{
+      if(it.popup && isMsgPoppable(it) && !devPopupShownKeys.has(it.key)){
+        markPopupShownOnThisDevice(it.key);
+        queuePopup(it.key);
+      }
+    });
+
+    // If a message gets stopped/expired while it's on screen, dismiss it now
+    if(currentPopupKey && !isMsgPoppable(devNotifByKey[currentPopupKey])) dismissPopupMsg();
+    renderNotifList();
+    renderDevSentList();
+  });
+}
+
+function queuePopup(key){
+  // Avoid duplicates in the queue
+  if(!popupQueue.includes(key)) popupQueue.push(key);
+  processPopupQueue();
+}
+function processPopupQueue(){
+  if(popupShowing) return;
+  while(popupQueue.length){
+    const key=popupQueue.shift();
+    const msg=devNotifByKey[key];
+    // isMsgPoppable guards against stopped/expired messages
+    if(msg && isMsgPoppable(msg)){ showPopup(key,msg); return; }
+  }
+}
+function showPopup(key,msg){
+  popupShowing=true;
+  currentPopupKey=key;
+  document.getElementById('popupMsgBody').textContent=msg.text||'';
+  const meta=document.getElementById('popupMsgMeta');
+  const when=msg.sentAt?new Date(msg.sentAt).toLocaleString():'';
+  meta.textContent=[msg.sentBy?`From ${msg.sentBy}`:'',when].filter(Boolean).join(' · ');
+  document.getElementById('popupMsgModal').classList.add('open');
+}
+function dismissPopupMsg(){
+  document.getElementById('popupMsgModal').classList.remove('open');
+  popupShowing=false;
+  currentPopupKey=null;
+  processPopupQueue();
+}
+document.getElementById('popupMsgCloseBtn').addEventListener('click',dismissPopupMsg);
+document.getElementById('popupMsgModal').addEventListener('click',e=>{
+  if(e.target===document.getElementById('popupMsgModal')) dismissPopupMsg();
+});
+
+function renderNotifList(){
+  const div=document.getElementById('notifListDiv');
+  const badge=document.getElementById('notifBadge');
+  if(!div) return;
+  if(!devNotifAll.length){
+    div.innerHTML='<div class="empty">No notifications yet.</div>';
+    if(badge) badge.style.display='none';
+    return;
+  }
+  const unread=devNotifAll.filter(n=>!devNotifReadKeys.has(n.key));
+  if(badge){
+    if(unread.length){ badge.textContent=unread.length>9?'9+':String(unread.length); badge.style.display='flex'; }
+    else badge.style.display='none';
+  }
+  div.innerHTML=devNotifAll.slice(0,30).map(n=>{
+    const isUnread=!devNotifReadKeys.has(n.key);
+    const when=n.sentAt?new Date(n.sentAt).toLocaleString():'';
+    return `<div style="padding:10px 11px;border-radius:8px;border:1px solid ${isUnread?'rgba(99,102,241,.35)':'var(--border)'};background:${isUnread?'var(--primary-soft)':'var(--surface2)'};margin-bottom:7px;position:relative;">
+      <button onclick="deleteNotif('${n.key}')" title="Delete this notification" style="position:absolute;top:7px;right:7px;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.25);color:#f87171;width:22px;height:22px;border-radius:6px;padding:0;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transform:none;">✕</button>
+      <div style="font-size:13px;color:var(--text);white-space:pre-wrap;padding-right:26px;">${escapeHtml(n.text||'')}</div>
+      <div style="font-size:11px;color:var(--text-dim);margin-top:4px;">${[n.sentBy?escapeHtml(n.sentBy):'',when].filter(Boolean).join(' · ')}</div>
+    </div>`;
+  }).join('');
+}
+
+// Delete a single notification from Firebase (removes it for everyone)
+window.deleteNotif=async function(key){
+  try{
+    await remove(ref(db,'devMessages/'+key));
+    // Also clean up local read/shown state for this key
+    devNotifReadKeys.delete(key);
+    devPopupShownKeys.delete(key);
+    localStorage.setItem('devNotifReadKeys',JSON.stringify([...devNotifReadKeys]));
+    localStorage.setItem('devPopupShownKeys',JSON.stringify([...devPopupShownKeys]));
+  }catch(e){ alert('Failed to delete: '+e.message); }
+};
+
+// Delete all notifications (clears the devMessages node entirely)
+window.deleteAllNotifs=async function(){
+  if(!devNotifAll.length) return;
+  if(!confirm('Delete all notifications for everyone?')) return;
+  try{
+    await remove(ref(db,'devMessages'));
+    devNotifReadKeys.clear();
+    devPopupShownKeys.clear();
+    localStorage.setItem('devNotifReadKeys','[]');
+    localStorage.setItem('devPopupShownKeys','[]');
+  }catch(e){ alert('Failed to clear: '+e.message); }
+};
+
+function markAllNotifsRead(){
+  devNotifAll.forEach(n=>devNotifReadKeys.add(n.key));
+  localStorage.setItem('devNotifReadKeys',JSON.stringify([...devNotifReadKeys]));
+  renderNotifList();
+}
+
+window.toggleNotifPanel=function(){
+  const pop=document.getElementById('notifPopover');
+  pop.classList.toggle('open');
+  if(pop.classList.contains('open')) markAllNotifsRead();
+};
+window.closeNotifPanel=function(){
+  document.getElementById('notifPopover').classList.remove('open');
+};
+document.addEventListener('click',e=>{
+  const pop=document.getElementById('notifPopover');
+  const bell=document.getElementById('notifBellBtn');
+  if(pop && pop.classList.contains('open') && !pop.contains(e.target) && bell && !bell.contains(e.target)){
+    pop.classList.remove('open');
+  }
+});
+
+function renderDevSentList(){
+  const div=document.getElementById('devSentListDiv');
+  if(!div) return;
+  if(!devNotifAll.length){
+    div.innerHTML='<div class="empty" style="padding:12px 0;">Nothing sent yet.</div>';
+    return;
+  }
+  div.innerHTML=devNotifAll.slice(0,15).map(n=>{
+    const when=n.sentAt?new Date(n.sentAt).toLocaleString():'';
+    let statusLabel='', statusColor='var(--text-dim)';
+    if(n.popup){
+      if(n.active===false){ statusLabel='Stopped'; statusColor='#f87171'; }
+      else if(n.expiresAt && Date.now()>n.expiresAt){ statusLabel='Expired'; statusColor='var(--text-dim)'; }
+      else if(n.expiresAt){ statusLabel='Live until '+new Date(n.expiresAt).toLocaleTimeString(); statusColor='#34d399'; }
+      else { statusLabel='Live until stopped'; statusColor='#34d399'; }
+    }
+    const canStop=n.popup && isMsgPoppable(n);
+    const stopBtn=canStop?`<button class="danger" style="padding:4px 10px;font-size:11px;" onclick="stopDevMsg('${n.key}')">Stop</button>`:'';
+    return `<div style="padding:8px 10px;border-radius:7px;background:var(--surface2);border:1px solid var(--border);font-size:12px;">
+      <div style="color:var(--text);white-space:pre-wrap;">${escapeHtml(n.text||'')}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:5px;">
+        <div style="color:var(--text-dim);font-size:10.5px;">${[n.sentBy?escapeHtml(n.sentBy):'',when].filter(Boolean).join(' · ')}${statusLabel?` · <span style="color:${statusColor};">${statusLabel}</span>`:''}</div>
+        ${stopBtn}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Stop a broadcast from circulating any further — anyone who hasn't seen
+// the pop-up yet (or opens the app from now on) will no longer get it.
+window.stopDevMsg=async function(key){
+  try{ await update(ref(db,'devMessages/'+key),{active:false}); }
+  catch(e){ alert('Failed to stop: '+e.message); }
+};
+
+// ── Developer Panel toggle (Ctrl+Shift+D) ────────────────────────
+window.toggleDevPanel=function(){
+  const modal=document.getElementById('devPanelModal');
+  modal.classList.toggle('open');
+  if(modal.classList.contains('open')) renderDevSentList();
+};
+document.addEventListener('keydown',e=>{
+  if(e.ctrlKey && e.shiftKey && (e.key==='D' || e.key==='d')){
+    e.preventDefault();
+    toggleDevPanel();
+  }
+});
+document.getElementById('devPanelCloseBtn').addEventListener('click',()=>document.getElementById('devPanelModal').classList.remove('open'));
+document.getElementById('devPanelModal').addEventListener('click',e=>{
+  if(e.target===document.getElementById('devPanelModal')) document.getElementById('devPanelModal').classList.remove('open');
+});
+
+// Hide the timing control when the message isn't being shown as a pop-up at all
+const devMsgAsPopupEl=document.getElementById('devMsgAsPopup');
+const devMsgDurationWrap=document.getElementById('devMsgDurationWrap');
+if(devMsgAsPopupEl && devMsgDurationWrap){
+  devMsgAsPopupEl.addEventListener('change',()=>{
+    devMsgDurationWrap.style.display=devMsgAsPopupEl.checked?'':'none';
+  });
+}
+
+document.getElementById('devSendMsgBtn').addEventListener('click',async()=>{
+  const ta=document.getElementById('devMsgText');
+  const text=ta.value.trim();
+  if(!text) return alert('Type a message first.');
+  const asPopup=document.getElementById('devMsgAsPopup').checked;
+  const durationVal=document.getElementById('devMsgDuration').value;
+  const expiresAt=(asPopup && durationVal!=='manual') ? (Date.now()+Number(durationVal)*60000) : null;
+  const btn=document.getElementById('devSendMsgBtn');
+  btn.disabled=true; btn.textContent='Sending…';
+  try{
+    const payload={
+      text,
+      popup: asPopup,
+      active: true,
+      sentBy: currentUserName||'Developer',
+      sentAt: new Date().toISOString()
+    };
+    if(expiresAt) payload.expiresAt=expiresAt;
+    await push(ref(db,'devMessages'),payload);
+    ta.value='';
+  }catch(e){
+    alert('Failed to send: '+e.message);
+  }
+  btn.disabled=false; btn.textContent='Send';
+});
 </script>
 <script>
 // ═══ ADMIN PANEL ═══
@@ -2604,11 +3143,13 @@ window.removeCourse = async function(i){
 };
 
 // ── Work statuses (persisted in Firebase) ───────────────────────────
-const DEFAULT_WORK_STATUSES = ['Yet to Begin','Ongoing','Ready for Manager Review','Ready for Partner Review','Issued for Sign Off','Completed'];
+const DEFAULT_WORK_STATUSES = ['Yet to Begin','Ongoing','Ready for Manager Review','Ready for Partner Review','Issued for Sign Off','Signed off'];
 const WS_COLOR_PALETTE = ['ws-ytb','ws-ongoing','ws-rfmr','ws-rfpr','ws-ifs','ws-completed','ws-extra'];
 window.workStatuses = [...DEFAULT_WORK_STATUSES];
 
 window.getWsClass = function getWsClass(status){
+  // Legacy 'Completed' and new 'Signed off' both get the green badge
+  if(status==='Completed'||status==='Signed off') return 'ws-completed';
   const i = window.workStatuses.indexOf(status);
   if(i === -1) return 'ws-ytb';
   return WS_COLOR_PALETTE[i % WS_COLOR_PALETTE.length];
